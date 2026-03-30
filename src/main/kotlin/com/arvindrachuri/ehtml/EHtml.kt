@@ -7,30 +7,44 @@ import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.compiler.DocumentShellPass
 import com.arvindrachuri.ehtml.compiler.HtmlEmitter
 import com.arvindrachuri.ehtml.compiler.LayoutLoweringPass
+import com.arvindrachuri.ehtml.dsl.email
+import com.arvindrachuri.ehtml.dsl.emailDocument
 
 fun main() {
-    val tree =
-        ContainerNode(
-            children =
-                listOf(
-                    RowNode(
-                        children =
-                            listOf(
-                                ColumnNode(widthPercent = 50, children = listOf(TextNode("Left"))),
-                                ColumnNode(widthPercent = 50, children = listOf(TextNode("Right"))),
-                            )
-                    )
-                )
-        )
+    println("==== USING AST ===")
+    val document = emailDocument {
+        title = "Using AST"
+        container {
+            row {
+                column {
+                    widthPercent = 50
+                    +"Left"
+                }
+                column {
+                    widthPercent = 50
+                    +"Right"
+                }
+            }
+        }
+    }
 
-    val lowered = LayoutLoweringPass.run(tree)
-    val document =
-        DocumentShellPass.run(
-            lowered,
-            title = "Welcome Email",
-            lang = "th",
-            backgroundColor = "#e6e6e6",
-        )
     val html = HtmlEmitter.emit(document)
     println(html)
+    println()
+    println("==== USING DSL ===")
+    println(email {
+        title = "Using DSL"
+        container {
+            row {
+                column {
+                    widthPercent = 50
+                    +"Left"
+                }
+                column {
+                    widthPercent = 50
+                    +"Right"
+                }
+            }
+        }
+    })
 }

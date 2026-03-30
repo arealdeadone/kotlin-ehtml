@@ -449,4 +449,94 @@ class LayoutLoweringPassTest {
             html,
         )
     }
+
+    @Test
+    fun `ContainerNode merges user styles into lowered table`() {
+        val node =
+            ContainerNode(
+                width = 600,
+                styles = mapOf("background-color" to "#f5f5f5"),
+                children = listOf(TextNode("styled")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("background-color:#f5f5f5" in html)
+        assert("margin:0 auto" in html)
+        assert("width:600px" in html)
+    }
+
+    @Test
+    fun `ContainerNode user styles override structural styles`() {
+        val node =
+            ContainerNode(
+                width = 600,
+                styles = mapOf("margin" to "10px"),
+                children = listOf(TextNode("override")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("margin:10px" in html)
+        assert("margin:0 auto" !in html)
+    }
+
+    @Test
+    fun `RowNode merges user styles into lowered table`() {
+        val node =
+            RowNode(
+                styles = mapOf("background-color" to "#eeeeee"),
+                children = listOf(TextNode("styled row")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("background-color:#eeeeee" in html)
+        assert("width:100%" in html)
+    }
+
+    @Test
+    fun `RowNode user styles override structural styles`() {
+        val node =
+            RowNode(
+                styles = mapOf("width" to "50%"),
+                children = listOf(TextNode("override")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("style=\"" in html)
+        val styleStart = html.indexOf("style=\"") + 7
+        val styleEnd = html.indexOf("\"", styleStart)
+        val styleValue = html.substring(styleStart, styleEnd)
+        assertEquals(1, styleValue.split("width:").size - 1)
+        assert("width:50%" in styleValue)
+    }
+
+    @Test
+    fun `ColumnNode merges user styles into lowered td`() {
+        val node =
+            ColumnNode(
+                widthPercent = 50,
+                styles = mapOf("background-color" to "#ffffff", "font-size" to "14px"),
+                children = listOf(TextNode("styled column")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("background-color:#ffffff" in html)
+        assert("font-size:14px" in html)
+        assert("padding:0" in html)
+        assert("vertical-align:top" in html)
+        assert("width:50%" in html)
+    }
+
+    @Test
+    fun `ColumnNode user styles override structural styles`() {
+        val node =
+            ColumnNode(
+                widthPercent = 50,
+                styles = mapOf("padding" to "16px"),
+                children = listOf(TextNode("override")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("padding:16px" in html)
+        assert("padding:0" !in html)
+    }
 }

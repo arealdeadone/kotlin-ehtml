@@ -15,12 +15,12 @@ data class TextNode(val value: String) : EmailNode
 
 data class RawHtmlNode(val value: String) : EmailNode
 
-data class ContainerNode(val width: Int = 600, val children: List<EmailNode> = emptyList()) :
+data class ContainerNode(val width: Int = 600, val styles: Map<String, String> = emptyMap(), val children: List<EmailNode> = emptyList()) :
     EmailNode
 
-data class RowNode(val children: List<EmailNode> = emptyList()) : EmailNode
+data class RowNode(val styles: Map<String, String> = emptyMap(), val children: List<EmailNode> = emptyList()) : EmailNode
 
-data class ColumnNode(val widthPercent: Int? = null, val children: List<EmailNode> = emptyList()) :
+data class ColumnNode(val widthPercent: Int? = null, val styles: Map<String, String> = emptyMap(), val children: List<EmailNode> = emptyList()) :
     EmailNode
 
 data class EmailDocumentNode(

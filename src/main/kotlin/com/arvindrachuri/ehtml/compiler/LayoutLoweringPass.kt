@@ -34,7 +34,7 @@ object LayoutLoweringPass {
                     "role" to "presentation",
                     "width" to node.width.toString(),
                 ),
-            styles = mapOf("margin" to "0 auto", "width" to "${node.width}px"),
+            styles = mapOf("margin" to "0 auto", "width" to "${node.width}px") + node.styles,
             children = listOf(tr(children = listOf(td(children = loweredChildren)))),
         )
     }
@@ -60,7 +60,7 @@ object LayoutLoweringPass {
                     "role" to "presentation",
                     "width" to "100%",
                 ),
-            styles = mapOf("width" to "100%"),
+            styles = mapOf("width" to "100%") + node.styles,
             children = listOf(tr(children = loweredCells)),
         )
     }
@@ -73,6 +73,7 @@ object LayoutLoweringPass {
                     put("padding", "0")
                     put("vertical-align", "top")
                     node.widthPercent?.let { put("width", "$it%") }
+                    putAll(node.styles)
                 },
             children = node.children.map(::run),
         )

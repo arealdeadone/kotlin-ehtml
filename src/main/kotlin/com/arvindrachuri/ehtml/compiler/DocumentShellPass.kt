@@ -6,7 +6,7 @@ import com.arvindrachuri.ehtml.utils.Colors
 
 object DocumentShellPass {
     fun run(
-        body: EmailNode,
+        body: List<EmailNode>,
         title: String = "",
         lang: String = "en",
         backgroundColor: String = Colors.WHITE.value,
@@ -15,6 +15,6 @@ object DocumentShellPass {
             title = title,
             lang = lang,
             backgroundColor = backgroundColor,
-            children = listOf(body),
+            children = body,
         )
 }
