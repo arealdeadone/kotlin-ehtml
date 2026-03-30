@@ -26,5 +26,6 @@ class ColumnBuilder {
         styles = result.styles
     }
 
-    fun build(): ColumnNode = ColumnNode(widthPercent = widthPercent, children = children, styles = styles)
+    fun build(): ColumnNode =
+        ColumnNode(widthPercent = widthPercent, children = children, styles = styles)
 }

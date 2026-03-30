@@ -31,5 +31,4 @@ class ContainerBuilder {
     }
 
     fun build(): ContainerNode = ContainerNode(width = width, children = children, styles = styles)
-
 }

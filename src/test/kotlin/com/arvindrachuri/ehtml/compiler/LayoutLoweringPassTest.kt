@@ -495,10 +495,7 @@ class LayoutLoweringPassTest {
     @Test
     fun `RowNode user styles override structural styles`() {
         val node =
-            RowNode(
-                styles = mapOf("width" to "50%"),
-                children = listOf(TextNode("override")),
-            )
+            RowNode(styles = mapOf("width" to "50%"), children = listOf(TextNode("override")))
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assert("style=\"" in html)

@@ -14,15 +14,19 @@ class RowBuilder {
     operator fun String.unaryPlus() {
         children.add(TextNode(this))
     }
+
     fun rawHtml(value: String) {
         children.add(RawHtmlNode(value))
     }
+
     fun style(block: StyleBuilder.() -> Unit) {
         val result = StyleBuilder().apply(block).build()
         styles = result.styles
     }
+
     fun column(block: ColumnBuilder.() -> Unit) {
         children.add(ColumnBuilder().apply(block).build())
     }
+
     fun build(): RowNode = RowNode(styles = styles, children = children)
 }

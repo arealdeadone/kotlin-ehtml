@@ -13,9 +13,9 @@ fun email(block: EmailBuilder.() -> Unit): String {
 fun emailDocument(block: EmailBuilder.() -> Unit): EmailDocumentNode {
     val builder = EmailBuilder().apply(block)
     return DocumentShellPass.run(
-        body = builder.build().map{ LayoutLoweringPass.run(it) },
+        body = builder.build().map { LayoutLoweringPass.run(it) },
         title = builder.title,
         lang = builder.lang,
-        backgroundColor = builder.backgroundColor
+        backgroundColor = builder.backgroundColor,
     )
 }
