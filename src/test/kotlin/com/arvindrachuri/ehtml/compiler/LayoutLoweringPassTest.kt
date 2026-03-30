@@ -1,0 +1,452 @@
+package com.arvindrachuri.ehtml.compiler
+
+import com.arvindrachuri.ehtml.ast.ColumnNode
+import com.arvindrachuri.ehtml.ast.ContainerNode
+import com.arvindrachuri.ehtml.ast.ElementNode
+import com.arvindrachuri.ehtml.ast.EmailDocumentNode
+import com.arvindrachuri.ehtml.ast.RawHtmlNode
+import com.arvindrachuri.ehtml.ast.RowNode
+import com.arvindrachuri.ehtml.ast.TextNode
+import kotlin.test.assertEquals
+import org.junit.jupiter.api.Test
+
+class LayoutLoweringPassTest {
+
+    @Test
+    fun `ContainerNode lowers to centered presentation table with default width`() {
+        val node = ContainerNode(children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>content</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ContainerNode respects custom width`() {
+        val node = ContainerNode(width = 800, children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:800px" width="800"><tr><td>content</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `RowNode lowers to full-width presentation table`() {
+        val node = RowNode(children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top">content</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ColumnNode lowers to td with padding and vertical-align styles`() {
+        val node = ColumnNode(children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals("""<td style="padding:0;vertical-align:top">content</td>""", html)
+    }
+
+    @Test
+    fun `ColumnNode with widthPercent sets width attribute and style`() {
+        val node = ColumnNode(widthPercent = 50, children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<td style="padding:0;vertical-align:top;width:50%" width="50%">content</td>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ColumnNode without widthPercent has no width attribute or style`() {
+        val node = ColumnNode(widthPercent = null, children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals("""<td style="padding:0;vertical-align:top">content</td>""", html)
+    }
+
+    @Test
+    fun `non-column children inside RowNode get auto-wrapped in td`() {
+        val node = RowNode(children = listOf(TextNode("text content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top">text content</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `RowNode with multiple non-column children wraps each in td`() {
+        val node = RowNode(children = listOf(TextNode("first"), TextNode("second")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top">first</td><td style="padding:0;vertical-align:top">second</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `RowNode with ColumnNode children does not double-wrap`() {
+        val node =
+            RowNode(
+                children =
+                    listOf(
+                        ColumnNode(widthPercent = 50, children = listOf(TextNode("left"))),
+                        ColumnNode(widthPercent = 50, children = listOf(TextNode("right"))),
+                    )
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top;width:50%" width="50%">left</td><td style="padding:0;vertical-align:top;width:50%" width="50%">right</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `RowNode with mixed ColumnNode and non-ColumnNode children`() {
+        val node =
+            RowNode(
+                children =
+                    listOf(
+                        ColumnNode(widthPercent = 50, children = listOf(TextNode("column"))),
+                        TextNode("text"),
+                    )
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top;width:50%" width="50%">column</td><td style="padding:0;vertical-align:top">text</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `nested ContainerNode to RowNode to ColumnNode hierarchy`() {
+        val node =
+            ContainerNode(
+                width = 600,
+                children =
+                    listOf(
+                        RowNode(
+                            children =
+                                listOf(
+                                    ColumnNode(
+                                        widthPercent = 100,
+                                        children = listOf(TextNode("nested content")),
+                                    )
+                                )
+                        )
+                    ),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top;width:100%" width="100%">nested content</td></tr></table></td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `TextNode passes through unchanged`() {
+        val node = TextNode("plain text")
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals("plain text", html)
+    }
+
+    @Test
+    fun `RawHtmlNode passes through unchanged`() {
+        val node = RawHtmlNode("<br />")
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals("<br />", html)
+    }
+
+    @Test
+    fun `ElementNode recurses into children`() {
+        val node =
+            ElementNode(
+                tag = "div",
+                children = listOf(ContainerNode(width = 600, children = listOf(TextNode("inner")))),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<div><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>inner</td></tr></table></div>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ElementNode with multiple children recurses all`() {
+        val node =
+            ElementNode(
+                tag = "div",
+                children =
+                    listOf(
+                        TextNode("before"),
+                        ContainerNode(width = 600, children = listOf(TextNode("container"))),
+                        TextNode("after"),
+                    ),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<div>before<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>container</td></tr></table>after</div>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `EmailDocumentNode recurses into children`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test Email",
+                children =
+                    listOf(ContainerNode(width = 600, children = listOf(TextNode("email content")))),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>email content</td></tr></table>""" in
+                html
+        )
+        assert("<title>Test Email</title>" in html)
+    }
+
+    @Test
+    fun `EmailDocumentNode with multiple children recurses all`() {
+        val node =
+            EmailDocumentNode(
+                title = "Multi Content",
+                children =
+                    listOf(
+                        ContainerNode(width = 600, children = listOf(TextNode("first"))),
+                        ContainerNode(width = 600, children = listOf(TextNode("second"))),
+                    ),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>first</td></tr></table>""" in
+                html
+        )
+        assert(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>second</td></tr></table>""" in
+                html
+        )
+    }
+
+    @Test
+    fun `ContainerNode with multiple children wraps all in single td`() {
+        val node =
+            ContainerNode(
+                width = 600,
+                children = listOf(TextNode("first"), TextNode("second"), TextNode("third")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>firstsecondthird</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ColumnNode with multiple children`() {
+        val node =
+            ColumnNode(widthPercent = 50, children = listOf(TextNode("first"), TextNode("second")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<td style="padding:0;vertical-align:top;width:50%" width="50%">firstsecond</td>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `deeply nested layout structure`() {
+        val node =
+            ContainerNode(
+                width = 600,
+                children =
+                    listOf(
+                        RowNode(
+                            children =
+                                listOf(
+                                    ColumnNode(
+                                        widthPercent = 50,
+                                        children =
+                                            listOf(
+                                                RowNode(
+                                                    children =
+                                                        listOf(
+                                                            ColumnNode(
+                                                                widthPercent = 100,
+                                                                children = listOf(TextNode("deep")),
+                                                            )
+                                                        )
+                                                )
+                                            ),
+                                    )
+                                )
+                        )
+                    ),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("<table" in html)
+        assert("deep" in html)
+        assert("role=\"presentation\"" in html)
+    }
+
+    @Test
+    fun `ColumnNode with ElementNode children`() {
+        val node =
+            ColumnNode(
+                widthPercent = 50,
+                children = listOf(ElementNode(tag = "p", children = listOf(TextNode("paragraph")))),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<td style="padding:0;vertical-align:top;width:50%" width="50%"><p>paragraph</p></td>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `RawHtmlNode inside ContainerNode passes through`() {
+        val node = ContainerNode(width = 600, children = listOf(RawHtmlNode("<br />")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td><br /></td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `RowNode with RawHtmlNode child`() {
+        val node = RowNode(children = listOf(RawHtmlNode("<span>raw</span>")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top"><span>raw</span></td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ContainerNode with width 400`() {
+        val node = ContainerNode(width = 400, children = listOf(TextNode("narrow")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:400px" width="400"><tr><td>narrow</td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ColumnNode with widthPercent 25`() {
+        val node = ColumnNode(widthPercent = 25, children = listOf(TextNode("quarter")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<td style="padding:0;vertical-align:top;width:25%" width="25%">quarter</td>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `ColumnNode with widthPercent 100`() {
+        val node = ColumnNode(widthPercent = 100, children = listOf(TextNode("full")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<td style="padding:0;vertical-align:top;width:100%" width="100%">full</td>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `RowNode with three equal-width columns`() {
+        val node =
+            RowNode(
+                children =
+                    listOf(
+                        ColumnNode(widthPercent = 33, children = listOf(TextNode("col1"))),
+                        ColumnNode(widthPercent = 33, children = listOf(TextNode("col2"))),
+                        ColumnNode(widthPercent = 34, children = listOf(TextNode("col3"))),
+                    )
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("width:33%" in html)
+        assert("width:34%" in html)
+        assert("col1" in html && "col2" in html && "col3" in html)
+    }
+
+    @Test
+    fun `ElementNode with attributes and styles recurses children`() {
+        val node =
+            ElementNode(
+                tag = "section",
+                attributes = mapOf("id" to "main"),
+                styles = mapOf("background" to "white"),
+                children =
+                    listOf(
+                        ContainerNode(width = 600, children = listOf(TextNode("section content")))
+                    ),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("id=\"main\"" in html)
+        assert("background:white" in html)
+        assert("section content" in html)
+    }
+
+    @Test
+    fun `empty ContainerNode`() {
+        val node = ContainerNode(width = 600, children = emptyList())
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td></td></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `empty RowNode`() {
+        val node = RowNode(children = emptyList())
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr></tr></table>""",
+            html,
+        )
+    }
+
+    @Test
+    fun `empty ColumnNode`() {
+        val node = ColumnNode(widthPercent = 50, children = emptyList())
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assertEquals(
+            """<td style="padding:0;vertical-align:top;width:50%" width="50%"></td>""",
+            html,
+        )
+    }
+}

@@ -3,6 +3,7 @@ import com.ncorti.ktfmt.gradle.tasks.KtfmtFormatTask
 plugins {
     kotlin("jvm") version "2.3.20"
     id("com.ncorti.ktfmt.gradle") version "0.26.0"
+    jacoco
 }
 
 group = "com.arvindrachuri"
@@ -16,7 +17,20 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-tasks.test { useJUnitPlatform() }
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+jacoco { toolVersion = "0.8.14" }
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
 
 kotlin { jvmToolchain(21) }
 

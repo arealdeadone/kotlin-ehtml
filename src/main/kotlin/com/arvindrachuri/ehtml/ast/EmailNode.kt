@@ -1,5 +1,7 @@
 package com.arvindrachuri.ehtml.ast
 
+import com.arvindrachuri.ehtml.utils.Colors
+
 sealed interface EmailNode
 
 data class ElementNode(
@@ -20,3 +22,10 @@ data class RowNode(val children: List<EmailNode> = emptyList()) : EmailNode
 
 data class ColumnNode(val widthPercent: Int? = null, val children: List<EmailNode> = emptyList()) :
     EmailNode
+
+data class EmailDocumentNode(
+    val title: String,
+    val lang: String = "en",
+    val backgroundColor: String = Colors.WHITE.value,
+    val children: List<EmailNode> = emptyList(),
+) : EmailNode

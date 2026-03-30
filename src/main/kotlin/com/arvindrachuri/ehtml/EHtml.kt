@@ -4,6 +4,7 @@ import com.arvindrachuri.ehtml.ast.ColumnNode
 import com.arvindrachuri.ehtml.ast.ContainerNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.compiler.DocumentShellPass
 import com.arvindrachuri.ehtml.compiler.HtmlEmitter
 import com.arvindrachuri.ehtml.compiler.LayoutLoweringPass
 
@@ -23,6 +24,13 @@ fun main() {
         )
 
     val lowered = LayoutLoweringPass.run(tree)
-    val html = HtmlEmitter.emit(lowered)
+    val document =
+        DocumentShellPass.run(
+            lowered,
+            title = "Welcome Email",
+            lang = "th",
+            backgroundColor = "#e6e6e6",
+        )
+    val html = HtmlEmitter.emit(document)
     println(html)
 }

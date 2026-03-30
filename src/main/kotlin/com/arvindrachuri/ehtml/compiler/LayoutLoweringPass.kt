@@ -3,6 +3,7 @@ package com.arvindrachuri.ehtml.compiler
 import com.arvindrachuri.ehtml.ast.ColumnNode
 import com.arvindrachuri.ehtml.ast.ContainerNode
 import com.arvindrachuri.ehtml.ast.ElementNode
+import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
@@ -15,6 +16,7 @@ object LayoutLoweringPass {
             is RowNode -> lowerRow(node)
             is ColumnNode -> lowerColumn(node)
             is ElementNode -> node.copy(children = node.children.map(::run))
+            is EmailDocumentNode -> node.copy(children = node.children.map(::run))
             is TextNode -> node
             is RawHtmlNode -> node
         }

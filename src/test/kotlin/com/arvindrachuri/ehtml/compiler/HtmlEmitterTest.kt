@@ -6,9 +6,9 @@ import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
-import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.Test
 
 class HtmlEmitterTest {
 
@@ -20,11 +20,15 @@ class HtmlEmitterTest {
 
     @Test
     fun `escapes html tags in text nodes`() {
-        val node = TextNode("""
-            <script>
-                alert(1);
-            </script>
-        """.trimIndent())
+        val node =
+            TextNode(
+                """
+                <script>
+                    alert(1);
+                </script>
+                """
+                    .trimIndent()
+            )
         val result = HtmlEmitter.emit(node)
         assert("<script>" !in result && "<" !in result && ">" !in result)
         assert("&" in result)
@@ -38,10 +42,11 @@ class HtmlEmitterTest {
 
     @Test
     fun `void tags are self closing`() {
-        val node = ElementNode(tag = "img", mapOf(
-            "src" to "https://placehold.co/600x400",
-            "alt" to "placeholder",
-        ))
+        val node =
+            ElementNode(
+                tag = "img",
+                mapOf("src" to "https://placehold.co/600x400", "alt" to "placeholder"),
+            )
         val result = HtmlEmitter.emit(node)
         assert(result.endsWith("/>"))
         assert("</img>" !in result)
@@ -49,8 +54,10 @@ class HtmlEmitterTest {
 
     @Test
     fun `url attributes like href and src are encoded valid urls and query parameters`() {
-        val aNode = ElementNode(tag = "a", attributes = mapOf("href" to "https://example.com?a=1&b=2"))
-        val imgNode = ElementNode(tag = "img", attributes = mapOf("src" to "https://example.com?a=1&b=2"))
+        val aNode =
+            ElementNode(tag = "a", attributes = mapOf("href" to "https://example.com?a=1&b=2"))
+        val imgNode =
+            ElementNode(tag = "img", attributes = mapOf("src" to "https://example.com?a=1&b=2"))
         val resultANode = HtmlEmitter.emit(aNode)
         val resultImgNode = HtmlEmitter.emit(imgNode)
         assertEquals("""<a href="https://example.com?a=1&amp;b=2"></a>""", resultANode)
@@ -68,7 +75,11 @@ class HtmlEmitterTest {
 
     @Test
     fun `children are rendered in order`() {
-        val node = ElementNode(tag = "td", children = listOf(TextNode("first value "), TextNode("second value")))
+        val node =
+            ElementNode(
+                tag = "td",
+                children = listOf(TextNode("first value "), TextNode("second value")),
+            )
         val result = HtmlEmitter.emit(node)
         assertEquals("""<td>first value second value</td>""", result)
     }
@@ -81,22 +92,16 @@ class HtmlEmitterTest {
 
     @Test
     fun `Container node must be lowered and throws exception when not lowered`() {
-        assertFailsWith<IllegalStateException> {
-            HtmlEmitter.emit(ContainerNode())
-        }
+        assertFailsWith<IllegalStateException> { HtmlEmitter.emit(ContainerNode()) }
     }
 
     @Test
     fun `Row node must be lowered and throws exception when not lowered`() {
-        assertFailsWith<IllegalStateException> {
-            HtmlEmitter.emit(RowNode())
-        }
+        assertFailsWith<IllegalStateException> { HtmlEmitter.emit(RowNode()) }
     }
 
     @Test
     fun `Column node must be lowered and throws exception when not lowered`() {
-        assertFailsWith<IllegalStateException> {
-            HtmlEmitter.emit(ColumnNode())
-        }
+        assertFailsWith<IllegalStateException> { HtmlEmitter.emit(ColumnNode()) }
     }
 }
