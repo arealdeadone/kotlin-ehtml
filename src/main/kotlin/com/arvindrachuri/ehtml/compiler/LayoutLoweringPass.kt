@@ -8,6 +8,7 @@ import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.utils.Constants
 
 object LayoutLoweringPass {
     fun run(node: EmailNode): EmailNode =
@@ -31,6 +32,7 @@ object LayoutLoweringPass {
                     "border" to "0",
                     "cellpadding" to "0",
                     "cellspacing" to "0",
+                    Constants.MSO_PASS_MARKER to Constants.MSO_PASS_MARKED_CONTAINER,
                     "role" to "presentation",
                     "width" to node.width.toString(),
                 ),

@@ -1,18 +1,10 @@
 package com.arvindrachuri.ehtml.compiler
 
-import com.arvindrachuri.ehtml.ast.ColumnNode
-import com.arvindrachuri.ehtml.ast.ContainerNode
-import com.arvindrachuri.ehtml.ast.ElementNode
-import com.arvindrachuri.ehtml.ast.EmailDocumentNode
-import com.arvindrachuri.ehtml.ast.EmailNode
-import com.arvindrachuri.ehtml.ast.RawHtmlNode
-import com.arvindrachuri.ehtml.ast.RowNode
-import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.ast.*
+import com.arvindrachuri.ehtml.utils.Constants
 import org.owasp.encoder.Encode
 
 object HtmlEmitter {
-    private val voidTags = setOf("br", "hr", "img", "input", "link", "meta")
-
     fun emit(node: EmailNode): String = buildString { appendNode(node) }
 
     private fun StringBuilder.appendNode(node: EmailNode) {
@@ -72,7 +64,7 @@ object HtmlEmitter {
             append('"')
         }
 
-        if (node.children.isEmpty() && node.tag in voidTags) {
+        if (node.children.isEmpty() && node.tag in Constants.VOID_TAGS) {
             append(" />")
             return
         }

@@ -2,6 +2,18 @@ package com.arvindrachuri.ehtml.dsl.builders
 
 import com.arvindrachuri.ehtml.dsl.EmailDsl
 import com.arvindrachuri.ehtml.dsl.builders.result.StyleBuildResult
+import com.arvindrachuri.ehtml.utils.CssAttribute.BACKGROUND_COLOR
+import com.arvindrachuri.ehtml.utils.CssAttribute.BORDER
+import com.arvindrachuri.ehtml.utils.CssAttribute.COLOR
+import com.arvindrachuri.ehtml.utils.CssAttribute.DISPLAY
+import com.arvindrachuri.ehtml.utils.CssAttribute.FONT_SIZE
+import com.arvindrachuri.ehtml.utils.CssAttribute.FONT_WEIGHT
+import com.arvindrachuri.ehtml.utils.CssAttribute.LINE_HEIGHT
+import com.arvindrachuri.ehtml.utils.CssAttribute.MARGIN
+import com.arvindrachuri.ehtml.utils.CssAttribute.PADDING
+import com.arvindrachuri.ehtml.utils.CssAttribute.TEXT_ALIGN
+import com.arvindrachuri.ehtml.utils.CssAttribute.WIDTH
+import com.arvindrachuri.ehtml.utils.DisplayType
 
 @EmailDsl
 class StyleBuilder {
@@ -15,7 +27,7 @@ class StyleBuilder {
     var textAlign: String? = null
     var width: String? = null
     var border: String? = null
-
+    var display: DisplayType? = null
     private val custom = mutableMapOf<String, String>()
     private val warnings = mutableListOf<String>()
 
@@ -26,16 +38,17 @@ class StyleBuilder {
 
     fun build(): StyleBuildResult {
         val styles = buildMap {
-            padding?.let { put("padding", it) }
-            margin?.let { put("margin", it) }
-            fontSize?.let { put("font-size", it) }
-            fontWeight?.let { put("font-weight", it) }
-            lineHeight?.let { put("line-height", it) }
-            color?.let { put("color", it) }
-            backgroundColor?.let { put("background-color", it) }
-            textAlign?.let { put("text-align", it) }
-            width?.let { put("width", it) }
-            border?.let { put("border", it) }
+            padding?.let { put(PADDING, it) }
+            margin?.let { put(MARGIN, it) }
+            fontSize?.let { put(FONT_SIZE, it) }
+            fontWeight?.let { put(FONT_WEIGHT, it) }
+            lineHeight?.let { put(LINE_HEIGHT, it) }
+            color?.let { put(COLOR, it) }
+            backgroundColor?.let { put(BACKGROUND_COLOR, it) }
+            textAlign?.let { put(TEXT_ALIGN, it) }
+            width?.let { put(WIDTH, it) }
+            border?.let { put(BORDER, it) }
+            display?.let { put(DISPLAY, it.value) }
             putAll(custom)
         }
         return StyleBuildResult(styles, warnings)
