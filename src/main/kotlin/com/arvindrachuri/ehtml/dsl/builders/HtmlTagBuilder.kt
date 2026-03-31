@@ -1,9 +1,7 @@
 package com.arvindrachuri.ehtml.dsl.builders
 
+import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailNode
-import com.arvindrachuri.ehtml.utils.CssAttribute.BORDER
-import com.arvindrachuri.ehtml.utils.CssAttribute.DISPLAY
-import com.arvindrachuri.ehtml.utils.DisplayType
 import com.arvindrachuri.ehtml.utils.HtmlElementTag.A
 import com.arvindrachuri.ehtml.utils.HtmlElementTag.B
 import com.arvindrachuri.ehtml.utils.HtmlElementTag.BR
@@ -21,6 +19,12 @@ import com.arvindrachuri.ehtml.utils.HtmlElementTag.P
 import com.arvindrachuri.ehtml.utils.HtmlElementTag.SPAN
 import com.arvindrachuri.ehtml.utils.HtmlElementTag.STRONG
 import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.BORDER
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.DISPLAY
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.FONT_SIZE
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.HEIGHT
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.LINE_HEIGHT
+import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 
 interface HtmlTagBuilder {
     fun addChild(node: EmailNode)
@@ -75,7 +79,7 @@ interface HtmlTagBuilder {
 
     fun a(href: String, block: ElementBuilder.() -> Unit) {
         addChild(
-            ElementBuilder(A, mapOf(HtmlTagAttributes.A.HREF.value to href)).apply(block).build()
+            ElementBuilder(A, mapOf(HtmlTagAttributes.A.Href.value to href)).apply(block).build()
         )
     }
 
@@ -84,8 +88,8 @@ interface HtmlTagBuilder {
             ElementBuilder(
                     IMG,
                     mapOf(
-                        HtmlTagAttributes.Img.SRC.value to src,
-                        HtmlTagAttributes.Img.ALT.value to alt,
+                        HtmlTagAttributes.Img.Align.value to src,
+                        HtmlTagAttributes.Img.Alt.value to alt,
                     ),
                 )
                 .apply(block)
@@ -99,5 +103,19 @@ interface HtmlTagBuilder {
 
     fun br(block: ElementBuilder.() -> Unit = {}) {
         addChild(ElementBuilder(BR).apply(block).build())
+    }
+
+    fun spacer(height: Int) {
+        addChild(
+            ElementNode(
+                tag = "div",
+                styles =
+                    mapOf(
+                        HEIGHT to "${height}px",
+                        FONT_SIZE to "${height}px",
+                        LINE_HEIGHT to "${height}px",
+                    ),
+            )
+        )
     }
 }

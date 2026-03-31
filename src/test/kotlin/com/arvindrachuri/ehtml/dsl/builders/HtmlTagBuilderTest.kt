@@ -1,6 +1,10 @@
 package com.arvindrachuri.ehtml.dsl.builders
 
 import com.arvindrachuri.ehtml.dsl.email
+import com.arvindrachuri.ehtml.utils.css.values.DisplayType
+import com.arvindrachuri.ehtml.utils.css.values.OverflowType
+import com.arvindrachuri.ehtml.utils.css.values.TextDecorationType
+import com.arvindrachuri.ehtml.utils.css.values.TextTransformType
 import kotlin.test.Test
 
 class HtmlTagBuilderTest {
@@ -194,5 +198,77 @@ class HtmlTagBuilderTest {
     fun `element nesting inside other elements`() {
         val html = columnHtml { div { span { a(href = "https://example.com") { +"link" } } } }
         assert("""<div><span><a href="https://example.com">link</a></span></div>""" in html)
+    }
+
+    @Test
+    fun `spacer renders div with height styles`() {
+        val html = columnHtml { spacer(30) }
+        assert("height:30px" in html)
+        assert("font-size:30px" in html)
+        assert("line-height:30px" in html)
+    }
+
+    @Test
+    fun `spacer with different height`() {
+        val html = columnHtml { spacer(10) }
+        assert("height:10px" in html)
+        assert("font-size:10px" in html)
+        assert("line-height:10px" in html)
+    }
+
+    @Test
+    fun `spacer between elements preserves order`() {
+        val html = columnHtml {
+            p { +"before" }
+            spacer(20)
+            p { +"after" }
+        }
+        val beforePos = html.indexOf("before")
+        val spacerPos = html.indexOf("height:20px")
+        val afterPos = html.indexOf("after")
+        assert(beforePos < spacerPos)
+        assert(spacerPos < afterPos)
+    }
+
+    @Test
+    fun `element with enum-typed styles renders correctly`() {
+        val html = columnHtml {
+            div {
+                style {
+                    display = DisplayType.Block
+                    textDecoration = TextDecorationType.None
+                    textTransform = TextTransformType.UpperCase
+                    overflow = OverflowType.Hidden
+                }
+                +"styled"
+            }
+        }
+        assert("display:block" in html)
+        assert("text-decoration:none" in html)
+        assert("text-transform:uppercase" in html)
+        assert("overflow:hidden" in html)
+    }
+
+    @Test
+    fun `element with fontFamily renders correctly`() {
+        val html = columnHtml {
+            p {
+                style { fontFamily = "'Comfortaa', Helvetica, sans-serif" }
+                +"text"
+            }
+        }
+        assert("font-family" in html)
+        assert("Comfortaa" in html)
+    }
+
+    @Test
+    fun `element with borderRadius renders correctly`() {
+        val html = columnHtml {
+            div {
+                style { borderRadius = "12px" }
+                +"card"
+            }
+        }
+        assert("border-radius:12px" in html)
     }
 }

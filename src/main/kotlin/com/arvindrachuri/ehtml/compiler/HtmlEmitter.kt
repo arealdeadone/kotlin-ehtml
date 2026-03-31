@@ -2,6 +2,14 @@ package com.arvindrachuri.ehtml.compiler
 
 import com.arvindrachuri.ehtml.ast.*
 import com.arvindrachuri.ehtml.utils.Constants
+import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.BODY
+import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.HEAD
+import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.HTML
+import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.META
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.BACKGROUND_COLOR
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.MARGIN
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.PADDING
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.WORD_SPACING
 import org.owasp.encoder.Encode
 
 object HtmlEmitter {
@@ -23,26 +31,26 @@ object HtmlEmitter {
     }
 
     private fun StringBuilder.appendDocument(node: EmailDocumentNode) {
-        append("<!DOCTYPE html>")
+        append("<!DOCTYPE $HTML>")
         append(
-            """<html lang="${escapeAttribute(node.lang)}" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">"""
+            """<$HTML lang="${escapeAttribute(node.lang)}" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">"""
         )
-        append("<head>")
-        append("""<meta charset="utf-8" />""")
-        append("""<meta name="viewport" content="width=device-width, initial-scale=1" />""")
-        append("""<meta http-equiv="X-UA-Compatible" content="IE=edge" />""")
+        append("<$HEAD>")
+        append("""<$META charset="utf-8" />""")
+        append("""<$META name="viewport" content="width=device-width, initial-scale=1" />""")
+        append("""<$META http-equiv="X-UA-Compatible" content="IE=edge" />""")
         append(
             """<!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->"""
         )
         if (node.title.isNotEmpty()) {
             append("""<title>${escapeTextContent(node.title)}</title>""")
         }
-        append("</head>")
+        append("</$HEAD>")
         append(
-            """<body style="margin:0; padding:0; word-spacing:normal; background-color:${escapeAttribute(node.backgroundColor)}">"""
+            """<$BODY style="$MARGIN:0; $PADDING:0; $WORD_SPACING:normal; $BACKGROUND_COLOR:${escapeAttribute(node.backgroundColor)}">"""
         )
         node.children.forEach { child -> appendNode(child) }
-        append("""</body></html>""")
+        append("""</$BODY></$HTML>""")
     }
 
     private fun StringBuilder.appendElement(node: ElementNode) {

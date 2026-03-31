@@ -1,14 +1,17 @@
 package com.arvindrachuri.ehtml.compiler
 
-import com.arvindrachuri.ehtml.ast.ColumnNode
-import com.arvindrachuri.ehtml.ast.ContainerNode
-import com.arvindrachuri.ehtml.ast.ElementNode
-import com.arvindrachuri.ehtml.ast.EmailDocumentNode
-import com.arvindrachuri.ehtml.ast.EmailNode
-import com.arvindrachuri.ehtml.ast.RawHtmlNode
-import com.arvindrachuri.ehtml.ast.RowNode
-import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.ast.*
 import com.arvindrachuri.ehtml.utils.Constants
+import com.arvindrachuri.ehtml.utils.HtmlContainerTag.TABLE
+import com.arvindrachuri.ehtml.utils.HtmlContainerTag.TBODY
+import com.arvindrachuri.ehtml.utils.HtmlContainerTag.TD
+import com.arvindrachuri.ehtml.utils.HtmlContainerTag.TR
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes.Table
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.MARGIN
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.PADDING
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.VERTICAL_ALIGN
+import com.arvindrachuri.ehtml.utils.css.CssAttribute.WIDTH
+import com.arvindrachuri.ehtml.utils.css.values.VerticalAlignType
 
 object LayoutLoweringPass {
     fun run(node: EmailNode): EmailNode =
@@ -28,16 +31,19 @@ object LayoutLoweringPass {
         return table(
             attributes =
                 mapOf(
-                    "align" to "center",
-                    "border" to "0",
-                    "cellpadding" to "0",
-                    "cellspacing" to "0",
+                    Table.Align.value to "center",
+                    Table.Border.value to "0",
+                    Table.Cellpadding.value to "0",
+                    Table.Cellspacing.value to "0",
                     Constants.MSO_PASS_MARKER to Constants.MSO_PASS_MARKED_CONTAINER,
-                    "role" to "presentation",
-                    "width" to node.width.toString(),
+                    Table.Role.value to "presentation",
+                    Table.Width.value to node.width.toString(),
                 ),
-            styles = mapOf("margin" to "0 auto", "width" to "${node.width}px") + node.styles,
-            children = listOf(tr(children = listOf(td(children = loweredChildren)))),
+            styles = mapOf(MARGIN to "0 auto", WIDTH to "${node.width}px") + node.styles,
+            children =
+                listOf(
+                    tbody(children = listOf(tr(children = listOf(td(children = loweredChildren)))))
+                ),
         )
     }
 
@@ -48,7 +54,11 @@ object LayoutLoweringPass {
                     is ColumnNode -> lowerColumn(child)
                     else ->
                         td(
-                            styles = mapOf("padding" to "0", "vertical-align" to "top"),
+                            styles =
+                                mapOf(
+                                    PADDING to "0",
+                                    VERTICAL_ALIGN to VerticalAlignType.Top.value,
+                                ),
                             children = listOf(run(child)),
                         )
                 }
@@ -56,14 +66,14 @@ object LayoutLoweringPass {
         return table(
             attributes =
                 mapOf(
-                    "border" to "0",
-                    "cellpadding" to "0",
-                    "cellspacing" to "0",
-                    "role" to "presentation",
-                    "width" to "100%",
+                    Table.Border.value to "0",
+                    Table.Cellpadding.value to "0",
+                    Table.Cellspacing.value to "0",
+                    Table.Role.value to "presentation",
+                    Table.Width.value to "100%",
                 ),
-            styles = mapOf("width" to "100%") + node.styles,
-            children = listOf(tr(children = loweredCells)),
+            styles = mapOf(WIDTH to "100%") + node.styles,
+            children = listOf(tbody(children = listOf(tr(children = loweredCells)))),
         )
     }
 
@@ -72,9 +82,9 @@ object LayoutLoweringPass {
             attributes = buildMap { node.widthPercent?.let { put("width", "$it%") } },
             styles =
                 buildMap {
-                    put("padding", "0")
-                    put("vertical-align", "top")
-                    node.widthPercent?.let { put("width", "$it%") }
+                    put(PADDING, "0")
+                    put(VERTICAL_ALIGN, VerticalAlignType.Top.value)
+                    node.widthPercent?.let { put(WIDTH, "$it%") }
                     putAll(node.styles)
                 },
             children = node.children.map(::run),
@@ -84,17 +94,20 @@ object LayoutLoweringPass {
         attributes: Map<String, String> = emptyMap(),
         styles: Map<String, String> = emptyMap(),
         children: List<EmailNode> = emptyList(),
-    ) = ElementNode(tag = "table", attributes = attributes, styles = styles, children = children)
+    ) = ElementNode(tag = TABLE, attributes = attributes, styles = styles, children = children)
+
+    private fun tbody(children: List<EmailNode> = emptyList()) =
+        ElementNode(tag = TBODY, children = children)
 
     private fun tr(
         attributes: Map<String, String> = emptyMap(),
         styles: Map<String, String> = emptyMap(),
         children: List<EmailNode> = emptyList(),
-    ) = ElementNode(tag = "tr", attributes = attributes, styles = styles, children = children)
+    ) = ElementNode(tag = TR, attributes = attributes, styles = styles, children = children)
 
     private fun td(
         attributes: Map<String, String> = emptyMap(),
         styles: Map<String, String> = emptyMap(),
         children: List<EmailNode> = emptyList(),
-    ) = ElementNode(tag = "td", attributes = attributes, styles = styles, children = children)
+    ) = ElementNode(tag = TD, attributes = attributes, styles = styles, children = children)
 }

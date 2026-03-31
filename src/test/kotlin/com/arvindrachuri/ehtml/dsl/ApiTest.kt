@@ -140,4 +140,54 @@ class ApiTest {
         val msoCount = "<!--\\[if mso\\]>".toRegex().findAll(html).count()
         assertTrue(msoCount >= 4)
     }
+
+    @Test
+    fun `preheader renders hidden div with preview text`() {
+        val html = email {
+            title = "Preview"
+            preheader("Check out our deals")
+        }
+        assert("Check out our deals" in html)
+        assert("display:none" in html)
+        assert("mso-hide:all" in html)
+    }
+
+    @Test
+    fun `preheader has zero-visibility styles`() {
+        val html = email {
+            title = "Preview"
+            preheader("Preview text")
+        }
+        assert("font-size:1px" in html)
+        assert("line-height:1px" in html)
+        assert("max-height:0px" in html)
+        assert("max-width:0px" in html)
+        assert("opacity:0" in html)
+        assert("overflow:hidden" in html)
+    }
+
+    @Test
+    fun `preheader appears before container content`() {
+        val html = email {
+            title = "Order"
+            preheader("Preview text")
+            container { +"Body content" }
+        }
+        val preheaderPos = html.indexOf("Preview text")
+        val bodyPos = html.indexOf("Body content")
+        assert(preheaderPos < bodyPos)
+    }
+
+    @Test
+    fun `spacer renders at email level`() {
+        val html = email {
+            title = "Spaced"
+            container { +"First" }
+            spacer(30)
+            container { +"Second" }
+        }
+        assert("height:30px" in html)
+        assert("font-size:30px" in html)
+        assert("line-height:30px" in html)
+    }
 }

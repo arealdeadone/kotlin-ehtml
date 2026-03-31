@@ -17,7 +17,21 @@ object HtmlElementTag {
     const val EM = "em"
     const val HR = "hr"
     const val BR = "br"
-    const val INPUT = "input"
+}
+
+object HtmlHeaderTag {
     const val LINK = "link"
     const val META = "meta"
+    const val TITLE = "title"
+    const val STYLE = "style"
+    const val HEAD = "head"
+    const val HTML = "html"
+    const val BODY = "body"
+}
+
+object HtmlContainerTag {
+    const val TABLE = "table"
+    const val TBODY = "tbody"
+    const val TR = "tr"
+    const val TD = "td"
 }

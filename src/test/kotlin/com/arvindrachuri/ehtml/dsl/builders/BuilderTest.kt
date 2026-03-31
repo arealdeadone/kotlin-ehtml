@@ -5,6 +5,15 @@ import com.arvindrachuri.ehtml.ast.ContainerNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.utils.css.values.DirectionType
+import com.arvindrachuri.ehtml.utils.css.values.DisplayType
+import com.arvindrachuri.ehtml.utils.css.values.FloatType
+import com.arvindrachuri.ehtml.utils.css.values.FontStyleType
+import com.arvindrachuri.ehtml.utils.css.values.OverflowType
+import com.arvindrachuri.ehtml.utils.css.values.TextDecorationType
+import com.arvindrachuri.ehtml.utils.css.values.TextTransformType
+import com.arvindrachuri.ehtml.utils.css.values.VerticalAlignType
+import com.arvindrachuri.ehtml.utils.css.values.WhiteSpaceType
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.junit.jupiter.api.Test
@@ -231,6 +240,100 @@ class BuilderTest {
                 .build()
         assertEquals("10px", result.styles["padding"])
         assertEquals("underline", result.styles["text-decoration"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed display property`() {
+        val result = StyleBuilder().apply { display = DisplayType.Block }.build()
+        assertEquals("block", result.styles["display"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed textDecoration property`() {
+        val result = StyleBuilder().apply { textDecoration = TextDecorationType.None }.build()
+        assertEquals("none", result.styles["text-decoration"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed textTransform property`() {
+        val result = StyleBuilder().apply { textTransform = TextTransformType.UpperCase }.build()
+        assertEquals("uppercase", result.styles["text-transform"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed overflow property`() {
+        val result = StyleBuilder().apply { overflow = OverflowType.Hidden }.build()
+        assertEquals("hidden", result.styles["overflow"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed verticalAlign property`() {
+        val result = StyleBuilder().apply { verticalAlign = VerticalAlignType.Top }.build()
+        assertEquals("top", result.styles["vertical-align"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed direction property`() {
+        val result = StyleBuilder().apply { direction = DirectionType.Ltr }.build()
+        assertEquals("ltr", result.styles["direction"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed float property`() {
+        val result = StyleBuilder().apply { float = FloatType.None }.build()
+        assertEquals("none", result.styles["float"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed whiteSpace property`() {
+        val result = StyleBuilder().apply { whiteSpace = WhiteSpaceType.Nowrap }.build()
+        assertEquals("nowrap", result.styles["white-space"])
+    }
+
+    @Test
+    fun `StyleBuilder enum-typed fontStyle property`() {
+        val result = StyleBuilder().apply { fontStyle = FontStyleType.Italic }.build()
+        assertEquals("italic", result.styles["font-style"])
+    }
+
+    @Test
+    fun `StyleBuilder new string properties map correctly`() {
+        val result =
+            StyleBuilder()
+                .apply {
+                    fontFamily = "'Comfortaa', Helvetica, sans-serif"
+                    borderRadius = "12px"
+                    height = "288px"
+                    maxHeight = "288px"
+                    maxWidth = "0px"
+                    minWidth = "160px"
+                    minHeight = "50px"
+                    opacity = "0"
+                    letterSpacing = "1px"
+                }
+                .build()
+        assertEquals("'Comfortaa', Helvetica, sans-serif", result.styles["font-family"])
+        assertEquals("12px", result.styles["border-radius"])
+        assertEquals("288px", result.styles["height"])
+        assertEquals("288px", result.styles["max-height"])
+        assertEquals("0px", result.styles["max-width"])
+        assertEquals("160px", result.styles["min-width"])
+        assertEquals("50px", result.styles["min-height"])
+        assertEquals("0", result.styles["opacity"])
+        assertEquals("1px", result.styles["letter-spacing"])
+    }
+
+    @Test
+    fun `StyleBuilder overflowX and overflowY map correctly`() {
+        val result =
+            StyleBuilder()
+                .apply {
+                    overflowX = OverflowType.Hidden
+                    overflowY = OverflowType.Auto
+                }
+                .build()
+        assertEquals("hidden", result.styles["overflow-x"])
+        assertEquals("auto", result.styles["overflow-y"])
     }
 
     @Test

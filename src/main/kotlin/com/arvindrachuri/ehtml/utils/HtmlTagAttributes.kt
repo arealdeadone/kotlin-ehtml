@@ -2,11 +2,20 @@ package com.arvindrachuri.ehtml.utils
 
 object HtmlTagAttributes {
     enum class Img(val value: String) {
-        SRC("src"),
-        ALT("alt"),
+        Align("src"),
+        Alt("alt"),
     }
 
     enum class A(val value: String) {
-        HREF("href")
+        Href("href")
+    }
+
+    enum class Table(val value: String) {
+        Align("align"),
+        Border("border"),
+        Cellpadding("cellpadding"),
+        Cellspacing("cellspacing"),
+        Role("role"),
+        Width("width"),
     }
 }

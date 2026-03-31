@@ -19,7 +19,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>content</td></tr></table>""",
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td>content</td></tr></tbody></table>""",
             html,
         )
     }
@@ -30,7 +30,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:800px" width="800"><tr><td>content</td></tr></table>""",
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:800px" width="800"><tbody><tr><td>content</td></tr></tbody></table>""",
             html,
         )
     }
@@ -41,7 +41,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top">content</td></tr></table>""",
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr><td style="padding:0;vertical-align:top">content</td></tr></tbody></table>""",
             html,
         )
     }
@@ -79,7 +79,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top">text content</td></tr></table>""",
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr><td style="padding:0;vertical-align:top">text content</td></tr></tbody></table>""",
             html,
         )
     }
@@ -90,7 +90,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top">first</td><td style="padding:0;vertical-align:top">second</td></tr></table>""",
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr><td style="padding:0;vertical-align:top">first</td><td style="padding:0;vertical-align:top">second</td></tr></tbody></table>""",
             html,
         )
     }
@@ -108,7 +108,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top;width:50%" width="50%">left</td><td style="padding:0;vertical-align:top;width:50%" width="50%">right</td></tr></table>""",
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr><td style="padding:0;vertical-align:top;width:50%" width="50%">left</td><td style="padding:0;vertical-align:top;width:50%" width="50%">right</td></tr></tbody></table>""",
             html,
         )
     }
@@ -126,7 +126,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top;width:50%" width="50%">column</td><td style="padding:0;vertical-align:top">text</td></tr></table>""",
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr><td style="padding:0;vertical-align:top;width:50%" width="50%">column</td><td style="padding:0;vertical-align:top">text</td></tr></tbody></table>""",
             html,
         )
     }
@@ -152,7 +152,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top;width:100%" width="100%">nested content</td></tr></table></td></tr></table>""",
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td><table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr><td style="padding:0;vertical-align:top;width:100%" width="100%">nested content</td></tr></tbody></table></td></tr></tbody></table>""",
             html,
         )
     }
@@ -183,7 +183,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<div><table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>inner</td></tr></table></div>""",
+            """<div><table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td>inner</td></tr></tbody></table></div>""",
             html,
         )
     }
@@ -203,7 +203,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<div>before<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>container</td></tr></table>after</div>""",
+            """<div>before<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td>container</td></tr></tbody></table>after</div>""",
             html,
         )
     }
@@ -219,7 +219,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assert(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>email content</td></tr></table>""" in
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td>email content</td></tr></tbody></table>""" in
                 html
         )
         assert("<title>Test Email</title>" in html)
@@ -239,11 +239,11 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assert(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>first</td></tr></table>""" in
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td>first</td></tr></tbody></table>""" in
                 html
         )
         assert(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>second</td></tr></table>""" in
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td>second</td></tr></tbody></table>""" in
                 html
         )
     }
@@ -258,7 +258,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td>firstsecondthird</td></tr></table>""",
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td>firstsecondthird</td></tr></tbody></table>""",
             html,
         )
     }
@@ -332,7 +332,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td><br /></td></tr></table>""",
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td><br /></td></tr></tbody></table>""",
             html,
         )
     }
@@ -343,7 +343,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr><td style="padding:0;vertical-align:top"><span>raw</span></td></tr></table>""",
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr><td style="padding:0;vertical-align:top"><span>raw</span></td></tr></tbody></table>""",
             html,
         )
     }
@@ -354,7 +354,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:400px" width="400"><tr><td>narrow</td></tr></table>""",
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:400px" width="400"><tbody><tr><td>narrow</td></tr></tbody></table>""",
             html,
         )
     }
@@ -424,7 +424,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tr><td></td></tr></table>""",
+            """<table align="center" border="0" cellpadding="0" cellspacing="0" ${Constants.MSO_PASS_MARKER}="${Constants.MSO_PASS_MARKED_CONTAINER}" role="presentation" style="margin:0 auto;width:600px" width="600"><tbody><tr><td></td></tr></tbody></table>""",
             html,
         )
     }
@@ -435,7 +435,7 @@ class LayoutLoweringPassTest {
         val lowered = LayoutLoweringPass.run(node)
         val html = HtmlEmitter.emit(lowered)
         assertEquals(
-            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tr></tr></table>""",
+            """<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%" width="100%"><tbody><tr></tr></tbody></table>""",
             html,
         )
     }
