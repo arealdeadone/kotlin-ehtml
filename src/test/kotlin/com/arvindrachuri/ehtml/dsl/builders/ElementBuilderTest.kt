@@ -1,6 +1,7 @@
 package com.arvindrachuri.ehtml.dsl.builders
 
 import com.arvindrachuri.ehtml.compiler.HtmlEmitter
+import com.arvindrachuri.ehtml.dsl.builders.html.ElementBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

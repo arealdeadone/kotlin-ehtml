@@ -1,10 +1,12 @@
-package com.arvindrachuri.ehtml.dsl.builders
+package com.arvindrachuri.ehtml.dsl.builders.html
 
 import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.dsl.EmailDsl
+import com.arvindrachuri.ehtml.dsl.builders.result.EmailBuildResult
+import com.arvindrachuri.ehtml.dsl.builders.result.HeadBuildResult
 import com.arvindrachuri.ehtml.utils.Colors
 import com.arvindrachuri.ehtml.utils.TagUtils
 import com.arvindrachuri.ehtml.utils.css.CssAttribute.DISPLAY
@@ -20,15 +22,20 @@ import com.arvindrachuri.ehtml.utils.css.values.OverflowType
 
 @EmailDsl
 class EmailBuilder {
-    var title: String = ""
     var lang: String = "en"
     var backgroundColor: String = Colors.WHITE.value
 
     private val children = mutableListOf<EmailNode>()
     private val warnings = mutableListOf<String>()
 
+    private var headResult: HeadBuildResult = HeadBuildResult(title = "", styles = emptyList())
+
     operator fun String.unaryPlus() {
         children.add(TextNode(this))
+    }
+
+    fun head(block: HeadBuilder.() -> Unit) {
+        headResult = HeadBuilder().apply(block).build()
     }
 
     fun rawHtml(value: String) {
@@ -75,5 +82,6 @@ class EmailBuilder {
         )
     }
 
-    fun build(): List<EmailNode> = children
+    fun build(): EmailBuildResult =
+        EmailBuildResult(title = headResult.title, styles = headResult.styles, children = children)
 }

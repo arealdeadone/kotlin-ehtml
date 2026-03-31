@@ -1,10 +1,11 @@
-package com.arvindrachuri.ehtml.dsl.builders
+package com.arvindrachuri.ehtml.dsl.builders.html
 
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.dsl.EmailDsl
+import com.arvindrachuri.ehtml.dsl.builders.css.StyleBuilder
 import com.arvindrachuri.ehtml.utils.TagUtils
 
 @EmailDsl

@@ -1,5 +1,6 @@
 package com.arvindrachuri.ehtml.dsl.builders
 
+import com.arvindrachuri.ehtml.dsl.builders.html.ColumnBuilder
 import com.arvindrachuri.ehtml.dsl.email
 import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 import com.arvindrachuri.ehtml.utils.css.values.OverflowType
@@ -11,7 +12,7 @@ class HtmlTagBuilderTest {
 
     private fun columnHtml(block: ColumnBuilder.() -> Unit): String {
         return email {
-            title = "Test"
+            head { title = "Test" }
             container { row { column(block) } }
         }
     }

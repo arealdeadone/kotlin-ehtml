@@ -1,4 +1,4 @@
-package com.arvindrachuri.ehtml.dsl.builders
+package com.arvindrachuri.ehtml.dsl.builders.html
 
 import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailNode

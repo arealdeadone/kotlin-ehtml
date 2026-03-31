@@ -1,11 +1,15 @@
 package com.arvindrachuri.ehtml
 
 import com.arvindrachuri.ehtml.dsl.email
+import com.arvindrachuri.ehtml.utils.css.HtmlTagSelector
 
 fun main() {
     val comprehensiveExample = email {
-        title = "Three column layout"
         backgroundColor = "#f7f7f7"
+        head {
+            title = "Hello World"
+            style { tagSelector(HtmlTagSelector.Td) { border = "1px solid black" } }
+        }
         container {
             row {
                 style { border = "1px solid black" }

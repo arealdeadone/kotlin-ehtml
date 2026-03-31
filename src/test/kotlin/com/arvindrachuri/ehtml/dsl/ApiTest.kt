@@ -10,7 +10,7 @@ class ApiTest {
     @Test
     fun `email produces valid HTML document string`() {
         val html = email {
-            title = "Test"
+            head { title = "Test" }
             container { +"Hello" }
         }
         assertTrue(html.startsWith("<!DOCTYPE html>"))
@@ -23,7 +23,7 @@ class ApiTest {
     @Test
     fun `email output contains MSO conditional comments around container`() {
         val html = email {
-            title = "MSO Test"
+            head { title = "MSO Test" }
             container { +"Content" }
         }
         assertTrue("<!--[if mso]>" in html)
@@ -33,7 +33,7 @@ class ApiTest {
     @Test
     fun `emailDocument returns correct title`() {
         val doc = emailDocument {
-            title = "Test"
+            head { title = "Test" }
             container { +"Hello" }
         }
         assertEquals("Test", doc.title)
@@ -41,14 +41,14 @@ class ApiTest {
 
     @Test
     fun `emailDocument uses default lang`() {
-        val doc = emailDocument { title = "Test" }
+        val doc = emailDocument { head { title = "Test" } }
         assertEquals("en", doc.lang)
     }
 
     @Test
     fun `emailDocument uses custom lang`() {
         val doc = emailDocument {
-            title = "Test"
+            head { title = "Test" }
             lang = "fr"
         }
         assertEquals("fr", doc.lang)
@@ -56,14 +56,14 @@ class ApiTest {
 
     @Test
     fun `emailDocument uses default background color`() {
-        val doc = emailDocument { title = "Test" }
+        val doc = emailDocument { head { title = "Test" } }
         assertEquals(Colors.WHITE.value, doc.backgroundColor)
     }
 
     @Test
     fun `emailDocument uses custom background color`() {
         val doc = emailDocument {
-            title = "Test"
+            head { title = "Test" }
             backgroundColor = "#000000"
         }
         assertEquals("#000000", doc.backgroundColor)
@@ -72,7 +72,7 @@ class ApiTest {
     @Test
     fun `email with empty title omits title tag`() {
         val html = email {
-            title = ""
+            head { title = "" }
             container { +"Hello" }
         }
         assertTrue("<title>" !in html)
@@ -81,7 +81,7 @@ class ApiTest {
     @Test
     fun `email renders nested container row column structure`() {
         val html = email {
-            title = "Full"
+            head { title = "Full" }
             container {
                 row {
                     column {
@@ -103,7 +103,7 @@ class ApiTest {
     @Test
     fun `email renders container styles`() {
         val html = email {
-            title = "Styled"
+            head { title = "Styled" }
             container {
                 style { backgroundColor = "#f0f0f0" }
                 +"Styled content"
@@ -115,7 +115,7 @@ class ApiTest {
     @Test
     fun `email renders rawHtml at top level`() {
         val html = email {
-            title = "Raw"
+            head { title = "Raw" }
             rawHtml("<custom-tag>hello</custom-tag>")
         }
         assertTrue("<custom-tag>hello</custom-tag>" in html)
@@ -124,7 +124,7 @@ class ApiTest {
     @Test
     fun `email renders text at top level`() {
         val html = email {
-            title = "Text"
+            head { title = "Text" }
             +"Top level text"
         }
         assertTrue("Top level text" in html)
@@ -133,7 +133,7 @@ class ApiTest {
     @Test
     fun `email with multiple containers wraps each in MSO conditionals`() {
         val html = email {
-            title = "Multi"
+            head { title = "Multi" }
             container { +"First" }
             container { +"Second" }
         }
@@ -144,7 +144,7 @@ class ApiTest {
     @Test
     fun `preheader renders hidden div with preview text`() {
         val html = email {
-            title = "Preview"
+            head { title = "Preview" }
             preheader("Check out our deals")
         }
         assert("Check out our deals" in html)
@@ -155,7 +155,7 @@ class ApiTest {
     @Test
     fun `preheader has zero-visibility styles`() {
         val html = email {
-            title = "Preview"
+            head { title = "Preview" }
             preheader("Preview text")
         }
         assert("font-size:1px" in html)
@@ -169,7 +169,7 @@ class ApiTest {
     @Test
     fun `preheader appears before container content`() {
         val html = email {
-            title = "Order"
+            head { title = "Order" }
             preheader("Preview text")
             container { +"Body content" }
         }
@@ -181,7 +181,7 @@ class ApiTest {
     @Test
     fun `spacer renders at email level`() {
         val html = email {
-            title = "Spaced"
+            head { title = "Spaced" }
             container { +"First" }
             spacer(30)
             container { +"Second" }

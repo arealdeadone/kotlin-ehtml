@@ -5,6 +5,11 @@ import com.arvindrachuri.ehtml.ast.ContainerNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.dsl.builders.css.StyleBuilder
+import com.arvindrachuri.ehtml.dsl.builders.html.ColumnBuilder
+import com.arvindrachuri.ehtml.dsl.builders.html.ContainerBuilder
+import com.arvindrachuri.ehtml.dsl.builders.html.EmailBuilder
+import com.arvindrachuri.ehtml.dsl.builders.html.RowBuilder
 import com.arvindrachuri.ehtml.utils.css.values.DirectionType
 import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 import com.arvindrachuri.ehtml.utils.css.values.FloatType
@@ -23,25 +28,25 @@ class BuilderTest {
     @Test
     fun `EmailBuilder unaryPlus adds TextNode`() {
         val builder = EmailBuilder().apply { +"hello" }
-        val children = builder.build()
-        assertEquals(1, children.size)
-        assertEquals(TextNode("hello"), children[0])
+        val result = builder.build()
+        assertEquals(1, result.children.size)
+        assertEquals(TextNode("hello"), result.children[0])
     }
 
     @Test
     fun `EmailBuilder rawHtml adds RawHtmlNode`() {
         val builder = EmailBuilder().apply { rawHtml("<br>") }
-        val children = builder.build()
-        assertEquals(1, children.size)
-        assertEquals(RawHtmlNode("<br>"), children[0])
+        val result = builder.build()
+        assertEquals(1, result.children.size)
+        assertEquals(RawHtmlNode("<br>"), result.children[0])
     }
 
     @Test
     fun `EmailBuilder container adds ContainerNode`() {
         val builder = EmailBuilder().apply { container { +"content" } }
-        val children = builder.build()
-        assertEquals(1, children.size)
-        assertTrue(children[0] is ContainerNode)
+        val result = builder.build()
+        assertEquals(1, result.children.size)
+        assertTrue(result.children[0] is ContainerNode)
     }
 
     @Test
@@ -52,7 +57,7 @@ class BuilderTest {
                 rawHtml("<hr>")
                 container { +"third" }
             }
-        val children = builder.build()
+        val children = builder.build().children
         assertEquals(3, children.size)
         assertTrue(children[0] is TextNode)
         assertTrue(children[1] is RawHtmlNode)
@@ -62,7 +67,6 @@ class BuilderTest {
     @Test
     fun `EmailBuilder default properties`() {
         val builder = EmailBuilder()
-        assertEquals("", builder.title)
         assertEquals("en", builder.lang)
     }
 
@@ -354,7 +358,7 @@ class BuilderTest {
                     }
                 }
             }
-        val children = builder.build()
+        val children = builder.build().children
         val container = children[0] as ContainerNode
         assertEquals(600, container.width)
 

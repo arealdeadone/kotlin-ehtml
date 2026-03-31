@@ -35,6 +35,7 @@ data class ColumnNode(
 data class EmailDocumentNode(
     val title: String,
     val lang: String = "en",
+    val headStyles: List<CssNode> = emptyList(),
     val backgroundColor: String = Colors.WHITE.value,
     val children: List<EmailNode> = emptyList(),
 ) : EmailNode

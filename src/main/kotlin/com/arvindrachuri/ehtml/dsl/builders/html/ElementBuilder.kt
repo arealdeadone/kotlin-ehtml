@@ -1,9 +1,10 @@
-package com.arvindrachuri.ehtml.dsl.builders
+package com.arvindrachuri.ehtml.dsl.builders.html
 
 import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.dsl.EmailDsl
+import com.arvindrachuri.ehtml.dsl.builders.css.StyleBuilder
 
 @EmailDsl
 class ElementBuilder(
