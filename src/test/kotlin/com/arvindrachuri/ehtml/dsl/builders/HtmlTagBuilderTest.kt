@@ -118,8 +118,8 @@ class HtmlTagBuilderTest {
     @Test
     fun `img has default display block and border 0 styles`() {
         val html = columnHtml { img(src = "photo.jpg", alt = "Photo") }
-        assert("display:block" in html)
-        assert("border:0" in html)
+        assert("display: block" in html)
+        assert("border: 0" in html)
     }
 
     @Test
@@ -127,9 +127,9 @@ class HtmlTagBuilderTest {
         val html = columnHtml {
             img(src = "photo.jpg", alt = "Photo") { style { border = "1px solid red" } }
         }
-        assert("border:1px solid red" in html)
-        assert("border:0" !in html)
-        assert("display:block" in html)
+        assert("border: 1px solid red" in html)
+        assert("border: 0" !in html)
+        assert("display: block" in html)
     }
 
     @Test
@@ -150,7 +150,7 @@ class HtmlTagBuilderTest {
     @Test
     fun `hr with styles`() {
         val html = columnHtml { hr { style { border = "1px solid #ccc" } } }
-        assert("border:1px solid #ccc" in html)
+        assert("border: 1px solid #ccc" in html)
     }
 
     @Test
@@ -191,8 +191,8 @@ class HtmlTagBuilderTest {
                 +"styled"
             }
         }
-        assert("color:#333" in html)
-        assert("font-size:16px" in html)
+        assert("color: #333" in html)
+        assert("font-size: 16px" in html)
     }
 
     @Test
@@ -204,17 +204,17 @@ class HtmlTagBuilderTest {
     @Test
     fun `spacer renders div with height styles`() {
         val html = columnHtml { spacer(30) }
-        assert("height:30px" in html)
-        assert("font-size:30px" in html)
-        assert("line-height:30px" in html)
+        assert("height: 30px" in html)
+        assert("font-size: 30px" in html)
+        assert("line-height: 30px" in html)
     }
 
     @Test
     fun `spacer with different height`() {
         val html = columnHtml { spacer(10) }
-        assert("height:10px" in html)
-        assert("font-size:10px" in html)
-        assert("line-height:10px" in html)
+        assert("height: 10px" in html)
+        assert("font-size: 10px" in html)
+        assert("line-height: 10px" in html)
     }
 
     @Test
@@ -225,7 +225,7 @@ class HtmlTagBuilderTest {
             p { +"after" }
         }
         val beforePos = html.indexOf("before")
-        val spacerPos = html.indexOf("height:20px")
+        val spacerPos = html.indexOf("height: 20px")
         val afterPos = html.indexOf("after")
         assert(beforePos < spacerPos)
         assert(spacerPos < afterPos)
@@ -244,10 +244,10 @@ class HtmlTagBuilderTest {
                 +"styled"
             }
         }
-        assert("display:block" in html)
-        assert("text-decoration:none" in html)
-        assert("text-transform:uppercase" in html)
-        assert("overflow:hidden" in html)
+        assert("display: block" in html)
+        assert("text-decoration: none" in html)
+        assert("text-transform: uppercase" in html)
+        assert("overflow: hidden" in html)
     }
 
     @Test
@@ -270,6 +270,6 @@ class HtmlTagBuilderTest {
                 +"card"
             }
         }
-        assert("border-radius:12px" in html)
+        assert("border-radius: 12px" in html)
     }
 }

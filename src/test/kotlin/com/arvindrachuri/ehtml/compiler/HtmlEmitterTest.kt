@@ -69,8 +69,8 @@ class HtmlEmitterTest {
         val node = ElementNode(tag = "td", styles = mapOf("color" to "blue", "margin" to "0 auto"))
         val result = HtmlEmitter.emit(node)
         assert("style=\"" in result)
-        assert("color:blue;" in result)
-        assert("margin:0 auto" in result)
+        assert("color: blue;" in result)
+        assert("margin: 0 auto" in result)
     }
 
     @Test

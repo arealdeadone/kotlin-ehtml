@@ -24,4 +24,7 @@ enum class HtmlTagSelector(val selector: String) {
     Tbody(HtmlContainerTag.TBODY),
     Tr(HtmlContainerTag.TR),
     Td(HtmlContainerTag.TD),
+    Container(HtmlContainerTag.TABLE),
+    Row(HtmlContainerTag.TR),
+    Column(HtmlContainerTag.TD),
 }

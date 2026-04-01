@@ -109,7 +109,7 @@ class ApiTest {
                 +"Styled content"
             }
         }
-        assertTrue("background-color:#f0f0f0" in html)
+        assertTrue("background-color: #f0f0f0" in html)
     }
 
     @Test
@@ -148,8 +148,8 @@ class ApiTest {
             preheader("Check out our deals")
         }
         assert("Check out our deals" in html)
-        assert("display:none" in html)
-        assert("mso-hide:all" in html)
+        assert("display: none" in html)
+        assert("mso-hide: all" in html)
     }
 
     @Test
@@ -158,12 +158,12 @@ class ApiTest {
             head { title = "Preview" }
             preheader("Preview text")
         }
-        assert("font-size:1px" in html)
-        assert("line-height:1px" in html)
-        assert("max-height:0px" in html)
-        assert("max-width:0px" in html)
-        assert("opacity:0" in html)
-        assert("overflow:hidden" in html)
+        assert("font-size: 1px" in html)
+        assert("line-height: 1px" in html)
+        assert("max-height: 0px" in html)
+        assert("max-width: 0px" in html)
+        assert("opacity: 0" in html)
+        assert("overflow: hidden" in html)
     }
 
     @Test
@@ -186,8 +186,8 @@ class ApiTest {
             spacer(30)
             container { +"Second" }
         }
-        assert("height:30px" in html)
-        assert("font-size:30px" in html)
-        assert("line-height:30px" in html)
+        assert("height: 30px" in html)
+        assert("font-size: 30px" in html)
+        assert("line-height: 30px" in html)
     }
 }

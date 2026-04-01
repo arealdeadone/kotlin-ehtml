@@ -66,8 +66,8 @@ class ElementBuilderTest {
                 }
                 .build()
         val html = HtmlEmitter.emit(node)
-        assert("padding:16px" in html)
-        assert("color:#333" in html)
+        assert("padding: 16px" in html)
+        assert("color: #333" in html)
     }
 
     @Test
@@ -76,9 +76,9 @@ class ElementBuilderTest {
         builder.applyDefaultStyles(mapOf("display" to "block", "border" to "0"))
         val node = builder.build()
         val html = HtmlEmitter.emit(node)
-        assert("display:block" in html)
-        assert("border:0" in html)
-        assert("width:200px" in html)
+        assert("display: block" in html)
+        assert("border: 0" in html)
+        assert("width: 200px" in html)
     }
 
     @Test
@@ -87,8 +87,8 @@ class ElementBuilderTest {
         builder.applyDefaultStyles(mapOf("border" to "0"))
         val node = builder.build()
         val html = HtmlEmitter.emit(node)
-        assert("border:1px solid red" in html)
-        assert("border:0" !in html)
+        assert("border: 1px solid red" in html)
+        assert("border: 0" !in html)
     }
 
     @Test

@@ -6,6 +6,8 @@ import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.BODY
 import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.HEAD
 import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.HTML
 import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.META
+import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.STYLE
+import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.TITLE
 import com.arvindrachuri.ehtml.utils.css.CssAttribute.BACKGROUND_COLOR
 import com.arvindrachuri.ehtml.utils.css.CssAttribute.MARGIN
 import com.arvindrachuri.ehtml.utils.css.CssAttribute.PADDING
@@ -43,7 +45,12 @@ object HtmlEmitter {
             """<!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->"""
         )
         if (node.title.isNotEmpty()) {
-            append("""<title>${escapeTextContent(node.title)}</title>""")
+            append("""<$TITLE>${escapeTextContent(node.title)}</$TITLE>""")
+        }
+        if(node.headStyles.isNotEmpty()) {
+            append("""<$STYLE type="text/css">""")
+            append(serializeCssNodes(node.headStyles))
+            append("</$STYLE>")
         }
         append("</$HEAD>")
         append(
@@ -68,7 +75,7 @@ object HtmlEmitter {
             append(' ')
             append(key)
             append("=\"")
-            append(escapeAttribute(value))
+            append(if (key == STYLE) value else escapeAttribute(value))
             append('"')
         }
 
@@ -81,8 +88,28 @@ object HtmlEmitter {
         append("</").append(node.tag).append('>')
     }
 
+    private fun serializeCssNodes(nodes: List<CssNode>): String = buildString {
+        nodes.forEach { node ->
+            when (node) {
+                is CssRule ->  {
+                    append(node.selector)
+                    append(" { ")
+                    append(node.styles.entries.joinToString("; ") { (k,v) -> "$k: $v" })
+                    append("; }")
+                }
+                is CssMediaQuery -> {
+                    append("@media (")
+                    append(node.condition)
+                    append(") {")
+                    append(serializeCssNodes(node.rules))
+                    append(" }")
+                }
+            }
+        }
+    }
+
     private fun serializeStyles(styles: Map<String, String>): String =
-        styles.toSortedMap().entries.joinToString(";") { (key, value) -> "$key:$value" }
+        styles.toSortedMap().entries.joinToString(";") { (key, value) -> "$key: $value" }
 
     private fun escapeTextContent(value: String): String = Encode.forHtmlContent(value)
 
