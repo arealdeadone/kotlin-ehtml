@@ -1,6 +1,6 @@
 package com.arvindrachuri.ehtml.utils
 
-import com.arvindrachuri.ehtml.utils.css.HtmlTagSelector
+import com.arvindrachuri.ehtml.utils.css.constants.HtmlTagSelector
 import kotlin.test.Test
 
 class HtmlTagSelectorSyncTest {

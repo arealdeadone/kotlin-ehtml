@@ -8,10 +8,10 @@ import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.HTML
 import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.META
 import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.STYLE
 import com.arvindrachuri.ehtml.utils.HtmlHeaderTag.TITLE
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.BACKGROUND_COLOR
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.MARGIN
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.PADDING
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.WORD_SPACING
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BACKGROUND_COLOR
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.MARGIN
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.PADDING
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.WORD_SPACING
 import org.owasp.encoder.Encode
 
 object HtmlEmitter {
@@ -47,7 +47,7 @@ object HtmlEmitter {
         if (node.title.isNotEmpty()) {
             append("""<$TITLE>${escapeTextContent(node.title)}</$TITLE>""")
         }
-        if(node.headStyles.isNotEmpty()) {
+        if (node.headStyles.isNotEmpty()) {
             append("""<$STYLE type="text/css">""")
             append(serializeCssNodes(node.headStyles))
             append("</$STYLE>")
@@ -91,10 +91,10 @@ object HtmlEmitter {
     private fun serializeCssNodes(nodes: List<CssNode>): String = buildString {
         nodes.forEach { node ->
             when (node) {
-                is CssRule ->  {
+                is CssRule -> {
                     append(node.selector)
                     append(" { ")
-                    append(node.styles.entries.joinToString("; ") { (k,v) -> "$k: $v" })
+                    append(node.styles.entries.joinToString("; ") { (k, v) -> "$k: $v" })
                     append("; }")
                 }
                 is CssMediaQuery -> {

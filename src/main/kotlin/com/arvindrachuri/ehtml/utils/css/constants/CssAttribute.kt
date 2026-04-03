@@ -1,8 +1,16 @@
-package com.arvindrachuri.ehtml.utils.css
+package com.arvindrachuri.ehtml.utils.css.constants
 
 object CssAttribute {
     const val PADDING = "padding"
+    const val PADDING_TOP = "padding-top"
+    const val PADDING_RIGHT = "padding-right"
+    const val PADDING_BOTTOM = "padding-bottom"
+    const val PADDING_LEFT = "padding-left"
     const val MARGIN = "margin"
+    const val MARGIN_TOP = "margin-top"
+    const val MARGIN_RIGHT = "margin-right"
+    const val MARGIN_BOTTOM = "margin-bottom"
+    const val MARGIN_LEFT = "margin-left"
     const val FONT_SIZE = "font-size"
     const val FONT_WEIGHT = "font-weight"
     const val FONT_STYLE = "font-style"

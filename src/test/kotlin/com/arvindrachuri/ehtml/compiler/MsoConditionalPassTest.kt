@@ -5,6 +5,7 @@ import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.compiler.transforms.MsoConditionalPass
 import com.arvindrachuri.ehtml.utils.Constants
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

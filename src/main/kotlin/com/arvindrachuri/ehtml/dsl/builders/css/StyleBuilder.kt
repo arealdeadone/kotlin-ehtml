@@ -2,7 +2,7 @@ package com.arvindrachuri.ehtml.dsl.builders.css
 
 import com.arvindrachuri.ehtml.dsl.EmailDsl
 import com.arvindrachuri.ehtml.dsl.builders.result.StyleBuildResult
-import com.arvindrachuri.ehtml.utils.css.CssAttribute
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute
 import com.arvindrachuri.ehtml.utils.css.values.*
 
 @EmailDsl
@@ -28,7 +28,7 @@ open class StyleBuilder {
     var lineHeight: String? = null
     var letterSpacing: String? = null
     var wordSpacing: String? = null
-    var textAlign: String? = null
+    var textAlign: TextAlignType? = null
     var textDecoration: TextDecorationType? = null
     var textTransform: TextTransformType? = null
     var overflow: OverflowType? = null
@@ -69,7 +69,7 @@ open class StyleBuilder {
             lineHeight?.let { put(CssAttribute.LINE_HEIGHT, it) }
             letterSpacing?.let { put(CssAttribute.LETTER_SPACING, it) }
             wordSpacing?.let { put(CssAttribute.WORD_SPACING, it) }
-            textAlign?.let { put(CssAttribute.TEXT_ALIGN, it) }
+            textAlign?.let { put(CssAttribute.TEXT_ALIGN, it.value) }
             textDecoration?.let { put(CssAttribute.TEXT_DECORATION, it.value) }
             textTransform?.let { put(CssAttribute.TEXT_TRANSFORM, it.value) }
             overflow?.let { put(CssAttribute.OVERFLOW, it.value) }

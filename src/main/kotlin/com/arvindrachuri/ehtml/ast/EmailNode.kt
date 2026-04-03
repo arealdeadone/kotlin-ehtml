@@ -17,17 +17,20 @@ data class RawHtmlNode(val value: String) : EmailNode
 
 data class ContainerNode(
     val width: Int = 600,
+    val attributes: Map<String, String> = emptyMap(),
     val styles: Map<String, String> = emptyMap(),
     val children: List<EmailNode> = emptyList(),
 ) : EmailNode
 
 data class RowNode(
+    val attributes: Map<String, String> = emptyMap(),
     val styles: Map<String, String> = emptyMap(),
     val children: List<EmailNode> = emptyList(),
 ) : EmailNode
 
 data class ColumnNode(
     val widthPercent: Int? = null,
+    val attributes: Map<String, String> = emptyMap(),
     val styles: Map<String, String> = emptyMap(),
     val children: List<EmailNode> = emptyList(),
 ) : EmailNode

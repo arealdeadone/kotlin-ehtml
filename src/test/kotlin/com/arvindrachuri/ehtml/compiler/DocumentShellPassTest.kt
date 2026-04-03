@@ -1,6 +1,7 @@
 package com.arvindrachuri.ehtml.compiler
 
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.compiler.transforms.DocumentShellPass
 import kotlin.test.Test
 
 class DocumentShellPassTest {

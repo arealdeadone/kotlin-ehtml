@@ -7,6 +7,7 @@ import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.compiler.transforms.LayoutLoweringPass
 import com.arvindrachuri.ehtml.utils.Constants
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
@@ -536,5 +537,67 @@ class LayoutLoweringPassTest {
         val html = HtmlEmitter.emit(lowered)
         assert("padding: 16px" in html)
         assert("padding: 0" !in html)
+    }
+
+    @Test
+    fun `ContainerNode attributes land on lowered table`() {
+        val node =
+            ContainerNode(
+                width = 600,
+                attributes = mapOf("class" to "w-100", "id" to "hero"),
+                children = listOf(TextNode("content")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("""class="w-100"""" in html)
+        assert("""id="hero"""" in html)
+    }
+
+    @Test
+    fun `RowNode attributes land on lowered table`() {
+        val node =
+            RowNode(
+                attributes = mapOf("class" to "d-sm-block", "id" to "row-1"),
+                children = listOf(TextNode("content")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("""class="d-sm-block"""" in html)
+        assert("""id="row-1"""" in html)
+    }
+
+    @Test
+    fun `ColumnNode attributes land on lowered td`() {
+        val node =
+            ColumnNode(
+                widthPercent = 50,
+                attributes = mapOf("class" to "text-sm-center", "id" to "col-1"),
+                children = listOf(TextNode("content")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("""class="text-sm-center"""" in html)
+        assert("""id="col-1"""" in html)
+    }
+
+    @Test
+    fun `container className survives full pipeline to emitted HTML`() {
+        val html =
+            com.arvindrachuri.ehtml.dsl.email {
+                head { title = "Test" }
+                container {
+                    className = "darkmode-bg"
+                    row {
+                        className = "custom-row"
+                        column {
+                            className = "custom-col"
+                            +"content"
+                        }
+                    }
+                }
+            }
+        assert("""class="darkmode-bg"""" in html)
+        assert("""class="custom-row"""" in html)
+        assert("""class="custom-col"""" in html)
     }
 }

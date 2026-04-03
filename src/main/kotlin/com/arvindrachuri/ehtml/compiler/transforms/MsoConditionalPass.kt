@@ -1,4 +1,4 @@
-package com.arvindrachuri.ehtml.compiler
+package com.arvindrachuri.ehtml.compiler.transforms
 
 import com.arvindrachuri.ehtml.ast.ColumnNode
 import com.arvindrachuri.ehtml.ast.ContainerNode
@@ -9,6 +9,7 @@ import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.utils.Constants
+import kotlin.collections.minus
 
 object MsoConditionalPass {
     fun run(node: EmailNode): List<EmailNode> =

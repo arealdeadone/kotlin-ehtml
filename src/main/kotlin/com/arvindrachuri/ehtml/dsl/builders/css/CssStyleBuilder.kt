@@ -4,7 +4,7 @@ import com.arvindrachuri.ehtml.ast.CssMediaQuery
 import com.arvindrachuri.ehtml.ast.CssNode
 import com.arvindrachuri.ehtml.ast.CssRule
 import com.arvindrachuri.ehtml.dsl.EmailDsl
-import com.arvindrachuri.ehtml.utils.css.HtmlTagSelector
+import com.arvindrachuri.ehtml.utils.css.constants.HtmlTagSelector
 
 @EmailDsl
 class CssStyleBuilder {
@@ -20,8 +20,9 @@ class CssStyleBuilder {
         rule(selector, block)
     }
 
-    fun classSelector(name: String, block: CssRuleBuilder.() -> Unit) {
-        rule(".$name", block)
+    fun classSelector(vararg names: String, block: CssRuleBuilder.() -> Unit) {
+        val selector = names.joinToString(", ") { ".$it" }
+        rule(selector, block)
     }
 
     fun idSelector(name: String, block: CssRuleBuilder.() -> Unit) {

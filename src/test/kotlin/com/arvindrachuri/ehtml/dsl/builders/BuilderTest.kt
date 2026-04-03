@@ -15,6 +15,7 @@ import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 import com.arvindrachuri.ehtml.utils.css.values.FloatType
 import com.arvindrachuri.ehtml.utils.css.values.FontStyleType
 import com.arvindrachuri.ehtml.utils.css.values.OverflowType
+import com.arvindrachuri.ehtml.utils.css.values.TextAlignType
 import com.arvindrachuri.ehtml.utils.css.values.TextDecorationType
 import com.arvindrachuri.ehtml.utils.css.values.TextTransformType
 import com.arvindrachuri.ehtml.utils.css.values.VerticalAlignType
@@ -188,7 +189,7 @@ class BuilderTest {
                     lineHeight = "1.5"
                     color = "#000"
                     backgroundColor = "#fff"
-                    textAlign = "center"
+                    textAlign = TextAlignType.Center
                     width = "100%"
                     border = "1px solid #ccc"
                 }
@@ -338,6 +339,63 @@ class BuilderTest {
                 .build()
         assertEquals("hidden", result.styles["overflow-x"])
         assertEquals("auto", result.styles["overflow-y"])
+    }
+
+    @Test
+    fun `ContainerBuilder className and id flow to node attributes`() {
+        val node =
+            ContainerBuilder()
+                .apply {
+                    className = "w-100"
+                    id = "main-container"
+                }
+                .build()
+        assertEquals("w-100", node.attributes["class"])
+        assertEquals("main-container", node.attributes["id"])
+    }
+
+    @Test
+    fun `RowBuilder className and id flow to node attributes`() {
+        val node =
+            RowBuilder()
+                .apply {
+                    className = "d-sm-block"
+                    id = "header-row"
+                }
+                .build()
+        assertEquals("d-sm-block", node.attributes["class"])
+        assertEquals("header-row", node.attributes["id"])
+    }
+
+    @Test
+    fun `ColumnBuilder className and id flow to node attributes`() {
+        val node =
+            ColumnBuilder()
+                .apply {
+                    className = "text-sm-center"
+                    id = "left-col"
+                }
+                .build()
+        assertEquals("text-sm-center", node.attributes["class"])
+        assertEquals("left-col", node.attributes["id"])
+    }
+
+    @Test
+    fun `ContainerBuilder unset className and id produce empty attributes`() {
+        val node = ContainerBuilder().apply { +"content" }.build()
+        assertTrue(node.attributes.isEmpty())
+    }
+
+    @Test
+    fun `RowBuilder unset className and id produce empty attributes`() {
+        val node = RowBuilder().apply { +"content" }.build()
+        assertTrue(node.attributes.isEmpty())
+    }
+
+    @Test
+    fun `ColumnBuilder unset className and id produce empty attributes`() {
+        val node = ColumnBuilder().apply { +"content" }.build()
+        assertTrue(node.attributes.isEmpty())
     }
 
     @Test

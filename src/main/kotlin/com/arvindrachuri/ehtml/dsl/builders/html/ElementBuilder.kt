@@ -16,6 +16,9 @@ class ElementBuilder(
     private var styles = emptyMap<String, String>()
     private var attributes = mutableMapOf<String, String>()
 
+    var className: String? = null
+    var id: String? = null
+
     override fun addChild(node: EmailNode) {
         children.add(node)
     }
@@ -44,7 +47,13 @@ class ElementBuilder(
     fun build(): ElementNode =
         ElementNode(
             tag = tag,
-            attributes = attributes + requiredAttributes,
+            attributes =
+                buildMap {
+                    putAll(attributes)
+                    className?.let { put("class", it) }
+                    id?.let { put("id", it) }
+                    putAll(requiredAttributes)
+                },
             styles = styles,
             children = children,
         )

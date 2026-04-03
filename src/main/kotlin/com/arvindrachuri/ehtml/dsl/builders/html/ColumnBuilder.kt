@@ -15,9 +15,21 @@ class ColumnBuilder : HtmlTagBuilder {
     private val children = mutableListOf<EmailNode>()
     private var styles = emptyMap<String, String>()
     private val warnings = mutableListOf<String>()
+    private val attributes = mutableMapOf<String, String>()
+
+    var className: String? = null
+    var id: String? = null
 
     override fun addChild(node: EmailNode) {
         children.add(node)
+    }
+
+    fun attr(name: String, value: String) {
+        attributes[name] = value
+    }
+
+    fun attrs(vararg pairs: Pair<String, String>) {
+        attributes.putAll(pairs)
     }
 
     operator fun String.unaryPlus() {
@@ -36,5 +48,15 @@ class ColumnBuilder : HtmlTagBuilder {
     }
 
     fun build(): ColumnNode =
-        ColumnNode(widthPercent = widthPercent, children = children, styles = styles)
+        ColumnNode(
+            widthPercent = widthPercent,
+            attributes =
+                buildMap {
+                    putAll(attributes)
+                    className?.let { put("class", it) }
+                    id?.let { put("id", it) }
+                },
+            children = children,
+            styles = styles,
+        )
 }

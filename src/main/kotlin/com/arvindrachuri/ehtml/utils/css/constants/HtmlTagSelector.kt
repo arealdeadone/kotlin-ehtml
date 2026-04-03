@@ -1,4 +1,4 @@
-package com.arvindrachuri.ehtml.utils.css
+package com.arvindrachuri.ehtml.utils.css.constants
 
 import com.arvindrachuri.ehtml.utils.HtmlContainerTag
 import com.arvindrachuri.ehtml.utils.HtmlElementTag
@@ -20,6 +20,16 @@ enum class HtmlTagSelector(val selector: String) {
     P(HtmlElementTag.P),
     Span(HtmlElementTag.SPAN),
     Strong(HtmlElementTag.STRONG),
+    Ul(HtmlElementTag.UL),
+    Ol(HtmlElementTag.OL),
+    Li(HtmlElementTag.LI),
+    Blockquote(HtmlElementTag.BLOCKQUOTE),
+    I(HtmlElementTag.I),
+    U(HtmlElementTag.U),
+    S(HtmlElementTag.S),
+    Sup(HtmlElementTag.SUP),
+    Sub(HtmlElementTag.SUB),
+    Pre(HtmlElementTag.PRE),
     Table(HtmlContainerTag.TABLE),
     Tbody(HtmlContainerTag.TBODY),
     Tr(HtmlContainerTag.TR),

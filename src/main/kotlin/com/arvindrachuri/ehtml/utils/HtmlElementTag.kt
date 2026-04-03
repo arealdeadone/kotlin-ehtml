@@ -17,6 +17,16 @@ object HtmlElementTag {
     const val EM = "em"
     const val HR = "hr"
     const val BR = "br"
+    const val UL = "ul"
+    const val OL = "ol"
+    const val LI = "li"
+    const val BLOCKQUOTE = "blockquote"
+    const val I = "i"
+    const val U = "u"
+    const val S = "s"
+    const val SUP = "sup"
+    const val SUB = "sub"
+    const val PRE = "pre"
 }
 
 object HtmlHeaderTag {

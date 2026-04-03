@@ -1,4 +1,4 @@
-package com.arvindrachuri.ehtml.compiler
+package com.arvindrachuri.ehtml.compiler.transforms
 
 import com.arvindrachuri.ehtml.ast.CssNode
 import com.arvindrachuri.ehtml.ast.EmailDocumentNode

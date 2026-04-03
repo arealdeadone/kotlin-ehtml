@@ -9,14 +9,15 @@ import com.arvindrachuri.ehtml.dsl.builders.result.EmailBuildResult
 import com.arvindrachuri.ehtml.dsl.builders.result.HeadBuildResult
 import com.arvindrachuri.ehtml.utils.Colors
 import com.arvindrachuri.ehtml.utils.TagUtils
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.DISPLAY
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.FONT_SIZE
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.HEIGHT
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.LINE_HEIGHT
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.MAX_HEIGHT
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.MAX_WIDTH
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.OPACITY
-import com.arvindrachuri.ehtml.utils.css.CssAttribute.OVERFLOW
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.DISPLAY
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.FONT_SIZE
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.HEIGHT
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.LINE_HEIGHT
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.MAX_HEIGHT
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.MAX_WIDTH
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.OPACITY
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.OVERFLOW
+import com.arvindrachuri.ehtml.utils.css.models.EmailTheme
 import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 import com.arvindrachuri.ehtml.utils.css.values.OverflowType
 
@@ -24,6 +25,7 @@ import com.arvindrachuri.ehtml.utils.css.values.OverflowType
 class EmailBuilder {
     var lang: String = "en"
     var backgroundColor: String = Colors.WHITE.value
+    var theme: EmailTheme? = null
 
     private val children = mutableListOf<EmailNode>()
     private val warnings = mutableListOf<String>()
