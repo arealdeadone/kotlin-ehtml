@@ -7,6 +7,8 @@ import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.dsl.EmailDsl
 import com.arvindrachuri.ehtml.dsl.builders.css.StyleBuilder
+import com.arvindrachuri.ehtml.utils.HtmlElementTag.DIV
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 import com.arvindrachuri.ehtml.utils.TagUtils
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.FONT_SIZE
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.HEIGHT
@@ -54,7 +56,7 @@ class ContainerBuilder {
     fun spacer(height: Int) {
         children.add(
             ElementNode(
-                tag = "div",
+                tag = DIV,
                 styles =
                     mapOf(
                         HEIGHT to "${height}px",
@@ -65,14 +67,19 @@ class ContainerBuilder {
         )
     }
 
+    fun single(block: SingleBuilder.() -> Unit) {
+        val built = SingleBuilder().apply(block).build()
+        built.children.forEach { children.add(it) }
+    }
+
     fun build(): ContainerNode =
         ContainerNode(
             width = width,
             attributes =
                 buildMap {
                     putAll(attributes)
-                    className?.let { put("class", it) }
-                    id?.let { put("id", it) }
+                    className?.let { put(HtmlTagAttributes.CLASS, it) }
+                    id?.let { put(HtmlTagAttributes.ID, it) }
                 },
             children = children,
             styles = styles,

@@ -5,6 +5,7 @@ import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.dsl.EmailDsl
 import com.arvindrachuri.ehtml.dsl.builders.css.StyleBuilder
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 
 @EmailDsl
 class ElementBuilder(
@@ -50,8 +51,8 @@ class ElementBuilder(
             attributes =
                 buildMap {
                     putAll(attributes)
-                    className?.let { put("class", it) }
-                    id?.let { put("id", it) }
+                    className?.let { put(HtmlTagAttributes.CLASS, it) }
+                    id?.let { put(HtmlTagAttributes.ID, it) }
                     putAll(requiredAttributes)
                 },
             styles = styles,

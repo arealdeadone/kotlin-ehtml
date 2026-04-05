@@ -6,6 +6,7 @@ import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.dsl.EmailDsl
 import com.arvindrachuri.ehtml.dsl.builders.css.StyleBuilder
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 import com.arvindrachuri.ehtml.utils.TagUtils
 
 @EmailDsl
@@ -53,8 +54,8 @@ class ColumnBuilder : HtmlTagBuilder {
             attributes =
                 buildMap {
                     putAll(attributes)
-                    className?.let { put("class", it) }
-                    id?.let { put("id", it) }
+                    className?.let { put(HtmlTagAttributes.CLASS, it) }
+                    id?.let { put(HtmlTagAttributes.ID, it) }
                 },
             children = children,
             styles = styles,

@@ -5,6 +5,7 @@ import com.arvindrachuri.ehtml.utils.css.constants.HtmlTagSelector.*
 import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 import com.arvindrachuri.ehtml.utils.css.values.FloatType
 import com.arvindrachuri.ehtml.utils.css.values.TextAlignType
+import com.arvindrachuri.ehtml.utils.css.values.TextDecorationType
 
 fun CssStyleBuilder.emailResetStyles() {
     rule("html, body") {
@@ -22,7 +23,7 @@ fun CssStyleBuilder.emailResetStyles() {
         lineHeight = "100%"
         border = "0"
         css("outline", "none")
-        textDecoration = com.arvindrachuri.ehtml.utils.css.values.TextDecorationType.None
+        textDecoration = TextDecorationType.None
         display = DisplayType.Inline
         css("-ms-interpolation-mode", "bicubic")
     }
@@ -55,7 +56,7 @@ fun CssStyleBuilder.emailResetStyles() {
         lineHeight = "100%"
     }
     tagSelector(A) {
-        textDecoration = com.arvindrachuri.ehtml.utils.css.values.TextDecorationType.Underline
+        textDecoration = TextDecorationType.Underline
     }
 }
 

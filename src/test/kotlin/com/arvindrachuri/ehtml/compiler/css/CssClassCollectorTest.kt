@@ -3,6 +3,7 @@ package com.arvindrachuri.ehtml.compiler.css
 import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.TextNode
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -11,14 +12,20 @@ class CssClassCollectorTest {
 
     @Test
     fun `collects single class from element`() {
-        val nodes = listOf(ElementNode(tag = "div", attributes = mapOf("class" to "w-100")))
+        val nodes =
+            listOf(ElementNode(tag = "div", attributes = mapOf(HtmlTagAttributes.CLASS to "w-100")))
         assertEquals(setOf("w-100"), CssClassCollector.collect(nodes))
     }
 
     @Test
     fun `collects multiple classes from single element`() {
         val nodes =
-            listOf(ElementNode(tag = "div", attributes = mapOf("class" to "w-100 d-block p-4")))
+            listOf(
+                ElementNode(
+                    tag = "div",
+                    attributes = mapOf(HtmlTagAttributes.CLASS to "w-100 d-block p-4"),
+                )
+            )
         assertEquals(setOf("w-100", "d-block", "p-4"), CssClassCollector.collect(nodes))
     }
 
@@ -26,8 +33,8 @@ class CssClassCollectorTest {
     fun `collects classes from multiple sibling elements`() {
         val nodes =
             listOf(
-                ElementNode(tag = "div", attributes = mapOf("class" to "w-100")),
-                ElementNode(tag = "p", attributes = mapOf("class" to "text-center")),
+                ElementNode(tag = "div", attributes = mapOf(HtmlTagAttributes.CLASS to "w-100")),
+                ElementNode(tag = "p", attributes = mapOf(HtmlTagAttributes.CLASS to "text-center")),
             )
         assertEquals(setOf("w-100", "text-center"), CssClassCollector.collect(nodes))
     }
@@ -38,9 +45,14 @@ class CssClassCollectorTest {
             listOf(
                 ElementNode(
                     tag = "div",
-                    attributes = mapOf("class" to "w-100"),
+                    attributes = mapOf(HtmlTagAttributes.CLASS to "w-100"),
                     children =
-                        listOf(ElementNode(tag = "p", attributes = mapOf("class" to "text-center"))),
+                        listOf(
+                            ElementNode(
+                                tag = "p",
+                                attributes = mapOf(HtmlTagAttributes.CLASS to "text-center"),
+                            )
+                        ),
                 )
             )
         assertEquals(setOf("w-100", "text-center"), CssClassCollector.collect(nodes))
@@ -52,7 +64,7 @@ class CssClassCollectorTest {
             listOf(
                 ElementNode(
                     tag = "table",
-                    attributes = mapOf("class" to "outer"),
+                    attributes = mapOf(HtmlTagAttributes.CLASS to "outer"),
                     children =
                         listOf(
                             ElementNode(
@@ -61,12 +73,13 @@ class CssClassCollectorTest {
                                     listOf(
                                         ElementNode(
                                             tag = "td",
-                                            attributes = mapOf("class" to "inner"),
+                                            attributes = mapOf(HtmlTagAttributes.CLASS to "inner"),
                                             children =
                                                 listOf(
                                                     ElementNode(
                                                         tag = "p",
-                                                        attributes = mapOf("class" to "deep"),
+                                                        attributes =
+                                                            mapOf(HtmlTagAttributes.CLASS to "deep"),
                                                     )
                                                 ),
                                         )
@@ -82,8 +95,8 @@ class CssClassCollectorTest {
     fun `deduplicates classes across elements`() {
         val nodes =
             listOf(
-                ElementNode(tag = "div", attributes = mapOf("class" to "w-100")),
-                ElementNode(tag = "p", attributes = mapOf("class" to "w-100")),
+                ElementNode(tag = "div", attributes = mapOf(HtmlTagAttributes.CLASS to "w-100")),
+                ElementNode(tag = "p", attributes = mapOf(HtmlTagAttributes.CLASS to "w-100")),
             )
         assertEquals(setOf("w-100"), CssClassCollector.collect(nodes))
     }
@@ -92,8 +105,8 @@ class CssClassCollectorTest {
     fun `ignores elements without class attribute`() {
         val nodes =
             listOf(
-                ElementNode(tag = "div", attributes = mapOf("id" to "hero")),
-                ElementNode(tag = "p", attributes = mapOf("class" to "text-center")),
+                ElementNode(tag = "div", attributes = mapOf(HtmlTagAttributes.ID to "hero")),
+                ElementNode(tag = "p", attributes = mapOf(HtmlTagAttributes.CLASS to "text-center")),
             )
         assertEquals(setOf("text-center"), CssClassCollector.collect(nodes))
     }
@@ -101,7 +114,12 @@ class CssClassCollectorTest {
     @Test
     fun `ignores blank class names from extra spaces`() {
         val nodes =
-            listOf(ElementNode(tag = "div", attributes = mapOf("class" to "  w-100   d-block  ")))
+            listOf(
+                ElementNode(
+                    tag = "div",
+                    attributes = mapOf(HtmlTagAttributes.CLASS to "  w-100   d-block  "),
+                )
+            )
         assertEquals(setOf("w-100", "d-block"), CssClassCollector.collect(nodes))
     }
 
@@ -122,14 +140,15 @@ class CssClassCollectorTest {
             listOf(
                 TextNode("hello"),
                 RawHtmlNode("<hr/>"),
-                ElementNode(tag = "div", attributes = mapOf("class" to "found")),
+                ElementNode(tag = "div", attributes = mapOf(HtmlTagAttributes.CLASS to "found")),
             )
         assertEquals(setOf("found"), CssClassCollector.collect(nodes))
     }
 
     @Test
     fun `handles empty class attribute`() {
-        val nodes = listOf(ElementNode(tag = "div", attributes = mapOf("class" to "")))
+        val nodes =
+            listOf(ElementNode(tag = "div", attributes = mapOf(HtmlTagAttributes.CLASS to "")))
         assertTrue(CssClassCollector.collect(nodes).isEmpty())
     }
 }

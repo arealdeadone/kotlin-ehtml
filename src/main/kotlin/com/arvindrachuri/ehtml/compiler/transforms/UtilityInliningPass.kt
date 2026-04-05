@@ -6,6 +6,7 @@ import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RowNode
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 
 object UtilityInliningPass {
     fun run(node: EmailNode, inlineStyles: Map<String, Map<String, String>>): EmailNode =
@@ -50,7 +51,9 @@ object UtilityInliningPass {
         inlineStyles: Map<String, Map<String, String>>,
         rebuild: (Map<String, String>, Map<String, String>, List<EmailNode>) -> T,
     ): T {
-        val classNames = attributes["class"]?.split(" ")?.filter { it.isNotBlank() } ?: emptyList()
+        val classNames =
+            attributes[HtmlTagAttributes.CLASS]?.split(" ")?.filter { it.isNotBlank() }
+                ?: emptyList()
 
         val utilityStyles = mutableMapOf<String, String>()
         val remainingClasses = mutableListOf<String>()
@@ -67,8 +70,8 @@ object UtilityInliningPass {
         }
 
         val newAttributes =
-            if (remainingClasses.isEmpty()) attributes - "class"
-            else attributes + ("class" to remainingClasses.joinToString(" "))
+            if (remainingClasses.isEmpty()) attributes - HtmlTagAttributes.CLASS
+            else attributes + (HtmlTagAttributes.CLASS to remainingClasses.joinToString(" "))
         val mergedStyles = utilityStyles + styles
         val processedChildren = children.map { run(it, inlineStyles) }
 

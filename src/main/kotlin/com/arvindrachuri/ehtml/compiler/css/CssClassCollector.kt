@@ -6,6 +6,7 @@ import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RowNode
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 
 object CssClassCollector {
 
@@ -25,7 +26,10 @@ object CssClassCollector {
                 is EmailDocumentNode -> emptyMap<String, String>() to node.children
                 else -> return
             }
-        attributes["class"]?.split(" ")?.filter { it.isNotBlank() }?.let { classes.addAll(it) }
+        attributes[HtmlTagAttributes.CLASS]
+            ?.split(" ")
+            ?.filter { it.isNotBlank() }
+            ?.let { classes.addAll(it) }
         children.forEach { collectFromNode(it, classes) }
     }
 }

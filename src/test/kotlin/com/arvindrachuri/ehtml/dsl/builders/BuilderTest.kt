@@ -10,6 +10,7 @@ import com.arvindrachuri.ehtml.dsl.builders.html.ColumnBuilder
 import com.arvindrachuri.ehtml.dsl.builders.html.ContainerBuilder
 import com.arvindrachuri.ehtml.dsl.builders.html.EmailBuilder
 import com.arvindrachuri.ehtml.dsl.builders.html.RowBuilder
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 import com.arvindrachuri.ehtml.utils.css.values.DirectionType
 import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 import com.arvindrachuri.ehtml.utils.css.values.FloatType
@@ -350,8 +351,8 @@ class BuilderTest {
                     id = "main-container"
                 }
                 .build()
-        assertEquals("w-100", node.attributes["class"])
-        assertEquals("main-container", node.attributes["id"])
+        assertEquals("w-100", node.attributes[HtmlTagAttributes.CLASS])
+        assertEquals("main-container", node.attributes[HtmlTagAttributes.ID])
     }
 
     @Test
@@ -363,8 +364,8 @@ class BuilderTest {
                     id = "header-row"
                 }
                 .build()
-        assertEquals("d-sm-block", node.attributes["class"])
-        assertEquals("header-row", node.attributes["id"])
+        assertEquals("d-sm-block", node.attributes[HtmlTagAttributes.CLASS])
+        assertEquals("header-row", node.attributes[HtmlTagAttributes.ID])
     }
 
     @Test
@@ -376,8 +377,8 @@ class BuilderTest {
                     id = "left-col"
                 }
                 .build()
-        assertEquals("text-sm-center", node.attributes["class"])
-        assertEquals("left-col", node.attributes["id"])
+        assertEquals("text-sm-center", node.attributes[HtmlTagAttributes.CLASS])
+        assertEquals("left-col", node.attributes[HtmlTagAttributes.ID])
     }
 
     @Test

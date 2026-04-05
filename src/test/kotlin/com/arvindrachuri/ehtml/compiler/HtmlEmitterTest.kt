@@ -2,7 +2,11 @@ package com.arvindrachuri.ehtml.compiler
 
 import com.arvindrachuri.ehtml.ast.ColumnNode
 import com.arvindrachuri.ehtml.ast.ContainerNode
+import com.arvindrachuri.ehtml.ast.CssMediaQuery
+import com.arvindrachuri.ehtml.ast.CssMsoConditional
+import com.arvindrachuri.ehtml.ast.CssRule
 import com.arvindrachuri.ehtml.ast.ElementNode
+import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
 import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
@@ -103,5 +107,149 @@ class HtmlEmitterTest {
     @Test
     fun `Column node must be lowered and throws exception when not lowered`() {
         assertFailsWith<IllegalStateException> { HtmlEmitter.emit(ColumnNode()) }
+    }
+
+    @Test
+    fun `mso conditional emits separate style block`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test",
+                headStyles =
+                    listOf(
+                        CssMsoConditional(
+                            listOf(CssRule("table", mapOf("width" to "600px")))
+                        ),
+                    ),
+            )
+        val html = HtmlEmitter.emit(node)
+        assert("<!--[if mso]>" in html)
+        assert("<![endif]-->" in html)
+        assert("width: 600px" in html)
+    }
+
+    @Test
+    fun `mso conditional style block is separate from main style block`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test",
+                headStyles =
+                    listOf(
+                        CssRule("body", mapOf("margin" to "0")),
+                        CssMsoConditional(
+                            listOf(CssRule("table", mapOf("width" to "600px")))
+                        ),
+                    ),
+            )
+        val html = HtmlEmitter.emit(node)
+        val mainStyleStart = html.indexOf("""<style type="text/css">""")
+        val mainStyleEnd = html.indexOf("</style>", mainStyleStart)
+        val mainBlock = html.substring(mainStyleStart, mainStyleEnd)
+        assert("margin: 0" in mainBlock)
+        val msoStart = html.indexOf("<!--[if mso]>", mainStyleEnd)
+        assert(msoStart > mainStyleEnd)
+    }
+
+    @Test
+    fun `mso conditional rules do not appear in main style block`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test",
+                headStyles =
+                    listOf(
+                        CssRule("body", mapOf("margin" to "0")),
+                        CssMsoConditional(
+                            listOf(CssRule(".mso-only", mapOf("padding" to "10px")))
+                        ),
+                    ),
+            )
+        val html = HtmlEmitter.emit(node)
+        val mainStyleStart = html.indexOf("""<style type="text/css">""")
+        val mainStyleEnd = html.indexOf("</style>")
+        val mainBlock = html.substring(mainStyleStart, mainStyleEnd)
+        assert(".mso-only" !in mainBlock)
+        assert("margin: 0" in mainBlock)
+    }
+
+    @Test
+    fun `mso conditional with multiple rules`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test",
+                headStyles =
+                    listOf(
+                        CssMsoConditional(
+                            listOf(
+                                CssRule("table", mapOf("width" to "600px")),
+                                CssRule(".btn", mapOf("padding" to "10px 20px")),
+                            )
+                        ),
+                    ),
+            )
+        val html = HtmlEmitter.emit(node)
+        assert("width: 600px" in html)
+        assert("padding: 10px 20px" in html)
+    }
+
+    @Test
+    fun `multiple mso conditional blocks emitted separately`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test",
+                headStyles =
+                    listOf(
+                        CssMsoConditional(
+                            listOf(CssRule("table", mapOf("width" to "600px")))
+                        ),
+                        CssMsoConditional(
+                            listOf(CssRule(".col", mapOf("display" to "block")))
+                        ),
+                    ),
+            )
+        val html = HtmlEmitter.emit(node)
+        assert("width: 600px" in html)
+        assert("display: block" in html)
+        val msoStyleCount = """<style type="text/css">""".toRegex().findAll(html).count()
+        assertEquals(2, msoStyleCount)
+    }
+
+    @Test
+    fun `no main style block emitted when only mso styles present`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test",
+                headStyles =
+                    listOf(
+                        CssMsoConditional(
+                            listOf(CssRule("table", mapOf("width" to "600px")))
+                        ),
+                    ),
+            )
+        val html = HtmlEmitter.emit(node)
+        val styleCount = """<style type="text/css">""".toRegex().findAll(html).count()
+        assertEquals(1, styleCount)
+        assert("<!--[if mso]>" in html)
+    }
+
+    @Test
+    fun `mso conditional with media query inside`() {
+        val node =
+            EmailDocumentNode(
+                title = "Test",
+                headStyles =
+                    listOf(
+                        CssMsoConditional(
+                            listOf(
+                                CssMediaQuery(
+                                    "max-width: 600px",
+                                    listOf(CssRule(".btn", mapOf("width" to "100%"))),
+                                )
+                            )
+                        ),
+                    ),
+            )
+        val html = HtmlEmitter.emit(node)
+        assert("<!--[if mso]>" in html)
+        assert("@media (max-width: 600px)" in html)
+        assert("width: 100%" in html)
     }
 }

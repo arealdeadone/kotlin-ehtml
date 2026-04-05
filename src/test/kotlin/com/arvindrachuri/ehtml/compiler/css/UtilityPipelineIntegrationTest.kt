@@ -258,4 +258,44 @@ class UtilityPipelineIntegrationTest {
         }
         assertTrue("""class="my-custom"""" in html)
     }
+
+    @Test
+    fun `mso conditional css emits in separate block via dsl`() {
+        val html = email {
+            head {
+                title = "Test"
+                style {
+                    classSelector("btn") { padding = "10px" }
+                    mso {
+                        tagSelector(com.arvindrachuri.ehtml.utils.css.constants.HtmlTagSelector.Table) { width = "600px" }
+                    }
+                }
+            }
+            single { +"content" }
+        }
+        assertTrue("<!--[if mso]>" in html)
+        assertTrue("width: 600px" in html)
+        assertTrue("padding: 10px" in html)
+    }
+
+    @Test
+    fun `mso conditional css does not leak into main style block`() {
+        val html = email {
+            head {
+                title = "Test"
+                style {
+                    classSelector("main") { color = "red" }
+                    mso {
+                        classSelector("mso-only") { color = "blue" }
+                    }
+                }
+            }
+            single { +"content" }
+        }
+        val firstStyleStart = html.indexOf("""<style type="text/css">""")
+        val firstStyleEnd = html.indexOf("</style>")
+        val mainBlock = html.substring(firstStyleStart, firstStyleEnd)
+        assertTrue(".main" in mainBlock)
+        assertTrue(".mso-only" !in mainBlock)
+    }
 }

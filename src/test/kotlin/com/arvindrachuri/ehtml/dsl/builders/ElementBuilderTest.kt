@@ -2,6 +2,7 @@ package com.arvindrachuri.ehtml.dsl.builders
 
 import com.arvindrachuri.ehtml.compiler.HtmlEmitter
 import com.arvindrachuri.ehtml.dsl.builders.html.ElementBuilder
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,7 +23,7 @@ class ElementBuilderTest {
 
     @Test
     fun `attr sets attribute on element`() {
-        val node = ElementBuilder("div").apply { attr("id", "main") }.build()
+        val node = ElementBuilder("div").apply { attr(HtmlTagAttributes.ID, "main") }.build()
         val html = HtmlEmitter.emit(node)
         assert("""id="main"""" in html)
     }
@@ -30,7 +31,11 @@ class ElementBuilderTest {
     @Test
     fun `attrs sets multiple attributes`() {
         val node =
-            ElementBuilder("div").apply { attrs("id" to "main", "class" to "wrapper") }.build()
+            ElementBuilder("div")
+                .apply {
+                    attrs(HtmlTagAttributes.ID to "main", HtmlTagAttributes.CLASS to "wrapper")
+                }
+                .build()
         val html = HtmlEmitter.emit(node)
         assert("""id="main"""" in html)
         assert("""class="wrapper"""" in html)

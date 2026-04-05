@@ -9,6 +9,7 @@ import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.compiler.transforms.LayoutLoweringPass
 import com.arvindrachuri.ehtml.utils.Constants
+import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -405,7 +406,7 @@ class LayoutLoweringPassTest {
         val node =
             ElementNode(
                 tag = "section",
-                attributes = mapOf("id" to "main"),
+                attributes = mapOf(HtmlTagAttributes.ID to "main"),
                 styles = mapOf("background" to "white"),
                 children =
                     listOf(
@@ -544,7 +545,8 @@ class LayoutLoweringPassTest {
         val node =
             ContainerNode(
                 width = 600,
-                attributes = mapOf("class" to "w-100", "id" to "hero"),
+                attributes =
+                    mapOf(HtmlTagAttributes.CLASS to "w-100", HtmlTagAttributes.ID to "hero"),
                 children = listOf(TextNode("content")),
             )
         val lowered = LayoutLoweringPass.run(node)
@@ -557,7 +559,8 @@ class LayoutLoweringPassTest {
     fun `RowNode attributes land on lowered table`() {
         val node =
             RowNode(
-                attributes = mapOf("class" to "d-sm-block", "id" to "row-1"),
+                attributes =
+                    mapOf(HtmlTagAttributes.CLASS to "d-sm-block", HtmlTagAttributes.ID to "row-1"),
                 children = listOf(TextNode("content")),
             )
         val lowered = LayoutLoweringPass.run(node)
@@ -571,7 +574,11 @@ class LayoutLoweringPassTest {
         val node =
             ColumnNode(
                 widthPercent = 50,
-                attributes = mapOf("class" to "text-sm-center", "id" to "col-1"),
+                attributes =
+                    mapOf(
+                        HtmlTagAttributes.CLASS to "text-sm-center",
+                        HtmlTagAttributes.ID to "col-1",
+                    ),
                 children = listOf(TextNode("content")),
             )
         val lowered = LayoutLoweringPass.run(node)

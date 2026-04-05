@@ -48,9 +48,21 @@ object HtmlEmitter {
             append("""<$TITLE>${escapeTextContent(node.title)}</$TITLE>""")
         }
         if (node.headStyles.isNotEmpty()) {
-            append("""<$STYLE type="text/css">""")
-            append(serializeCssNodes(node.headStyles))
-            append("</$STYLE>")
+            val (msoNodes, regularNodes) = node.headStyles.partition { it is CssMsoConditional }
+            if(regularNodes.isNotEmpty()) {
+                append("""<$STYLE type="text/css">""")
+                append(serializeCssNodes(regularNodes))
+                append("</$STYLE>")
+            }
+
+            msoNodes.forEach {mso ->
+                val conditional = mso as CssMsoConditional
+                append("""<!--[if mso]>""")
+                append("""<$STYLE type="text/css">""")
+                append(serializeCssNodes(conditional.rules))
+                append("</$STYLE>")
+                append("""<![endif]-->""")
+            }
         }
         append("</$HEAD>")
         append(
@@ -104,6 +116,7 @@ object HtmlEmitter {
                     append(serializeCssNodes(node.rules))
                     append(" }")
                 }
+                is CssMsoConditional -> append(serializeCssNodes(node.rules))
             }
         }
     }

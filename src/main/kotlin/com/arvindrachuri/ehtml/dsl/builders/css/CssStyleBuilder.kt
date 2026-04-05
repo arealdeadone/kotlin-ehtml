@@ -1,6 +1,7 @@
 package com.arvindrachuri.ehtml.dsl.builders.css
 
 import com.arvindrachuri.ehtml.ast.CssMediaQuery
+import com.arvindrachuri.ehtml.ast.CssMsoConditional
 import com.arvindrachuri.ehtml.ast.CssNode
 import com.arvindrachuri.ehtml.ast.CssRule
 import com.arvindrachuri.ehtml.dsl.EmailDsl
@@ -32,6 +33,11 @@ class CssStyleBuilder {
     fun media(condition: String, block: CssStyleBuilder.() -> Unit) {
         val nested = CssStyleBuilder().apply(block).build()
         rules.add(CssMediaQuery(condition = condition, rules = nested))
+    }
+
+    fun mso(block: CssStyleBuilder.() -> Unit) {
+        val nested = CssStyleBuilder().apply(block).build()
+        rules.add(CssMsoConditional(rules = nested))
     }
 
     fun build(): List<CssNode> = rules
