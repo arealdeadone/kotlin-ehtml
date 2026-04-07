@@ -49,13 +49,13 @@ object HtmlEmitter {
         }
         if (node.headStyles.isNotEmpty()) {
             val (msoNodes, regularNodes) = node.headStyles.partition { it is CssMsoConditional }
-            if(regularNodes.isNotEmpty()) {
+            if (regularNodes.isNotEmpty()) {
                 append("""<$STYLE type="text/css">""")
                 append(serializeCssNodes(regularNodes))
                 append("</$STYLE>")
             }
 
-            msoNodes.forEach {mso ->
+            msoNodes.forEach { mso ->
                 val conditional = mso as CssMsoConditional
                 append("""<!--[if mso]>""")
                 append("""<$STYLE type="text/css">""")

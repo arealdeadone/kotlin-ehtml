@@ -55,9 +55,7 @@ fun CssStyleBuilder.emailResetStyles() {
     ) {
         lineHeight = "100%"
     }
-    tagSelector(A) {
-        textDecoration = TextDecorationType.Underline
-    }
+    tagSelector(A) { textDecoration = TextDecorationType.Underline }
 }
 
 fun CssStyleBuilder.darkModeStyles() {

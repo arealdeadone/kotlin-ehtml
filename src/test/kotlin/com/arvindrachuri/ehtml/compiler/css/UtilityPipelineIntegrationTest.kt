@@ -1,6 +1,7 @@
 package com.arvindrachuri.ehtml.compiler.css
 
 import com.arvindrachuri.ehtml.dsl.email
+import com.arvindrachuri.ehtml.utils.css.constants.HtmlTagSelector
 import com.arvindrachuri.ehtml.utils.css.models.ColorToken
 import com.arvindrachuri.ehtml.utils.css.models.EmailTheme
 import kotlin.test.Test
@@ -266,12 +267,15 @@ class UtilityPipelineIntegrationTest {
                 title = "Test"
                 style {
                     classSelector("btn") { padding = "10px" }
-                    mso {
-                        tagSelector(com.arvindrachuri.ehtml.utils.css.constants.HtmlTagSelector.Table) { width = "600px" }
-                    }
+                    mso { tagSelector(HtmlTagSelector.Table) { width = "600px" } }
                 }
             }
-            single { +"content" }
+            single {
+                div {
+                    className = "btn"
+                    +"content"
+                }
+            }
         }
         assertTrue("<!--[if mso]>" in html)
         assertTrue("width: 600px" in html)
@@ -285,15 +289,22 @@ class UtilityPipelineIntegrationTest {
                 title = "Test"
                 style {
                     classSelector("main") { color = "red" }
-                    mso {
-                        classSelector("mso-only") { color = "blue" }
-                    }
+                    mso { classSelector("mso-only") { color = "blue" } }
                 }
             }
-            single { +"content" }
+            single {
+                div {
+                    className = "main"
+                    +"content"
+                }
+                div {
+                    className = "mso-only"
+                    +"mso content"
+                }
+            }
         }
         val firstStyleStart = html.indexOf("""<style type="text/css">""")
-        val firstStyleEnd = html.indexOf("</style>")
+        val firstStyleEnd = html.indexOf("</style>", firstStyleStart)
         val mainBlock = html.substring(firstStyleStart, firstStyleEnd)
         assertTrue(".main" in mainBlock)
         assertTrue(".mso-only" !in mainBlock)

@@ -18,10 +18,7 @@ publishing {
     }
 }
 
-java {
-    withSourcesJar()
-}
-
+java { withSourcesJar() }
 
 group = "com.arvindrachuri"
 

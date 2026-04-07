@@ -6,5 +6,4 @@ data class CssRule(val selector: String, val styles: Map<String, String>) : CssN
 
 data class CssMediaQuery(val condition: String, val rules: List<CssNode>) : CssNode
 
-
 data class CssMsoConditional(val rules: List<CssNode>) : CssNode

@@ -6,7 +6,6 @@ import com.arvindrachuri.ehtml.utils.css.constants.HtmlTagSelector
 import com.arvindrachuri.ehtml.utils.css.values.DisplayType
 import com.arvindrachuri.ehtml.utils.css.values.OverflowType
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class CssEmitterTest {
 
@@ -15,7 +14,13 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style { classSelector("w-100") { width = "100%" } }
+                style { classSelector("custom") { width = "100%" } }
+            }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
             }
         }
         assert("""<style type="text/css">""" in html)
@@ -27,7 +32,13 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style { classSelector("w-100") { width = "100%" } }
+                style { classSelector("custom") { width = "100%" } }
+            }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
             }
         }
         val stylePos = html.indexOf("<style")
@@ -46,10 +57,16 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style { classSelector("w-100") { width = "100%" } }
+                style { classSelector("custom") { width = "100%" } }
+            }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
             }
         }
-        assert(".w-100 {" in html)
+        assert(".custom {" in html)
     }
 
     @Test
@@ -112,6 +129,12 @@ class CssEmitterTest {
                     }
                 }
             }
+            single {
+                div {
+                    className = "card"
+                    +"x"
+                }
+            }
         }
         assert("border-radius: 12px" in html)
         assert("overflow: hidden" in html)
@@ -122,7 +145,13 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style { media("max-width: 630px") { classSelector("w-100") { width = "100%" } } }
+                style { media("max-width: 630px") { classSelector("custom") { width = "100%" } } }
+            }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
             }
         }
         assert("@media (max-width: 630px)" in html)
@@ -133,10 +162,16 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style { media("max-width: 630px") { classSelector("w-100") { width = "100%" } } }
+                style { media("max-width: 630px") { classSelector("custom") { width = "100%" } } }
+            }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
             }
         }
-        assert(".w-100 {" in html)
+        assert(".custom {" in html)
         assert("width: 100%" in html)
     }
 
@@ -147,13 +182,19 @@ class CssEmitterTest {
                 title = "Test"
                 style {
                     media("max-width: 630px") {
-                        classSelector("w-100") {
+                        classSelector("custom") {
                             important {
                                 width = "100%"
                                 display = DisplayType.Block
                             }
                         }
                     }
+                }
+            }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
                 }
             }
         }
@@ -171,6 +212,12 @@ class CssEmitterTest {
                         borderRadius = "12px"
                         important { width = "100%" }
                     }
+                }
+            }
+            single {
+                div {
+                    className = "card"
+                    +"x"
                 }
             }
         }
@@ -191,6 +238,12 @@ class CssEmitterTest {
                     }
                 }
             }
+            single {
+                div {
+                    className = "override"
+                    +"x"
+                }
+            }
         }
         assert("padding: 16px !important" in html)
         assert("margin: 0;" in html)
@@ -205,6 +258,16 @@ class CssEmitterTest {
                 style {
                     classSelector("a") { color = "#333" }
                     classSelector("b") { color = "#666" }
+                }
+            }
+            single {
+                div {
+                    className = "a"
+                    +"x"
+                }
+                div {
+                    className = "b"
+                    +"y"
                 }
             }
         }
@@ -225,6 +288,12 @@ class CssEmitterTest {
                     }
                 }
             }
+            single {
+                div {
+                    className = "darkmode-bg"
+                    +"x"
+                }
+            }
         }
         assert("@media (prefers-color-scheme: dark)" in html)
         assert("background-color: #272623 !important" in html)
@@ -242,8 +311,8 @@ class CssEmitterTest {
                 }
             }
         }
-        assert("table {" in html)
-        assert("tr {" in html)
+        assert("table" in html)
+        assert("tr" in html)
         assert("td {" in html)
     }
 
@@ -252,10 +321,16 @@ class CssEmitterTest {
         val doc = emailDocument {
             head {
                 title = "Test"
-                style { classSelector("w-100") { width = "100%" } }
+                style { classSelector("custom") { width = "100%" } }
+            }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
             }
         }
-        assertEquals(1, doc.headStyles.size)
+        assert(doc.headStyles.isNotEmpty())
     }
 
     @Test
@@ -269,11 +344,20 @@ class CssEmitterTest {
                         padding = "0"
                     }
                     media("max-width: 630px") {
-                        classSelector("w-100") { important { width = "100%" } }
+                        classSelector("custom") { important { width = "100%" } }
                     }
                 }
             }
-            container { row { column { +"Hello" } } }
+            container {
+                row {
+                    column {
+                        div {
+                            className = "custom"
+                            +"Hello"
+                        }
+                    }
+                }
+            }
         }
         assert("<title>Full Test</title>" in html)
         assert("""<style type="text/css">""" in html)

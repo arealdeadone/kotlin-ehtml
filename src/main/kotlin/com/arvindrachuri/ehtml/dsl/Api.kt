@@ -3,6 +3,8 @@ package com.arvindrachuri.ehtml.dsl
 import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.compiler.HtmlEmitter
 import com.arvindrachuri.ehtml.compiler.css.CssClassCollector
+import com.arvindrachuri.ehtml.compiler.css.CssOptimizationPass
+import com.arvindrachuri.ehtml.compiler.css.CssTreeShakePass
 import com.arvindrachuri.ehtml.compiler.css.UtilityClassResolver
 import com.arvindrachuri.ehtml.compiler.css.emailUtilityRules
 import com.arvindrachuri.ehtml.compiler.css.themeUtilityRules
@@ -25,19 +27,15 @@ fun emailDocument(block: EmailBuilder.() -> Unit): EmailDocumentNode {
     val usedClasses = CssClassCollector.collect(result.children)
     val resolved = resolver.resolve(usedClasses)
     val inlinedChildren = result.children.map { UtilityInliningPass.run(it, resolved.inlineStyles) }
-    return DocumentShellPass.run(
-        body = inlinedChildren.map(LayoutLoweringPass::run).flatMap(MsoConditionalPass::run),
-        title = result.title,
-        lang = builder.lang,
-        headStyles = resolved.headStyles + result.styles,
-        backgroundColor = builder.backgroundColor,
-    )
-    //    val usedClasses = CssClassCollector.collect(document.children)
-    //    val resolved = resolver.resolve(usedClasses)
+    val document =
+        DocumentShellPass.run(
+            body = inlinedChildren.map(LayoutLoweringPass::run).flatMap(MsoConditionalPass::run),
+            title = result.title,
+            lang = builder.lang,
+            headStyles = resolved.headStyles + result.styles,
+            backgroundColor = builder.backgroundColor,
+        )
+    val treeShaken = CssTreeShakePass.run(document)
 
-    //    return document.copy(
-    //        children = document.children.map { UtilityInliningPass.run(it, resolved.inlineStyles)
-    // },
-    //        headStyles = resolved.headStyles + document.headStyles,
-    //    )
+    return treeShaken.copy(headStyles = CssOptimizationPass.run(treeShaken.headStyles))
 }

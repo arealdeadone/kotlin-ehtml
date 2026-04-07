@@ -115,11 +115,7 @@ class HtmlEmitterTest {
             EmailDocumentNode(
                 title = "Test",
                 headStyles =
-                    listOf(
-                        CssMsoConditional(
-                            listOf(CssRule("table", mapOf("width" to "600px")))
-                        ),
-                    ),
+                    listOf(CssMsoConditional(listOf(CssRule("table", mapOf("width" to "600px"))))),
             )
         val html = HtmlEmitter.emit(node)
         assert("<!--[if mso]>" in html)
@@ -135,9 +131,7 @@ class HtmlEmitterTest {
                 headStyles =
                     listOf(
                         CssRule("body", mapOf("margin" to "0")),
-                        CssMsoConditional(
-                            listOf(CssRule("table", mapOf("width" to "600px")))
-                        ),
+                        CssMsoConditional(listOf(CssRule("table", mapOf("width" to "600px")))),
                     ),
             )
         val html = HtmlEmitter.emit(node)
@@ -157,9 +151,7 @@ class HtmlEmitterTest {
                 headStyles =
                     listOf(
                         CssRule("body", mapOf("margin" to "0")),
-                        CssMsoConditional(
-                            listOf(CssRule(".mso-only", mapOf("padding" to "10px")))
-                        ),
+                        CssMsoConditional(listOf(CssRule(".mso-only", mapOf("padding" to "10px")))),
                     ),
             )
         val html = HtmlEmitter.emit(node)
@@ -182,7 +174,7 @@ class HtmlEmitterTest {
                                 CssRule("table", mapOf("width" to "600px")),
                                 CssRule(".btn", mapOf("padding" to "10px 20px")),
                             )
-                        ),
+                        )
                     ),
             )
         val html = HtmlEmitter.emit(node)
@@ -197,12 +189,8 @@ class HtmlEmitterTest {
                 title = "Test",
                 headStyles =
                     listOf(
-                        CssMsoConditional(
-                            listOf(CssRule("table", mapOf("width" to "600px")))
-                        ),
-                        CssMsoConditional(
-                            listOf(CssRule(".col", mapOf("display" to "block")))
-                        ),
+                        CssMsoConditional(listOf(CssRule("table", mapOf("width" to "600px")))),
+                        CssMsoConditional(listOf(CssRule(".col", mapOf("display" to "block")))),
                     ),
             )
         val html = HtmlEmitter.emit(node)
@@ -218,11 +206,7 @@ class HtmlEmitterTest {
             EmailDocumentNode(
                 title = "Test",
                 headStyles =
-                    listOf(
-                        CssMsoConditional(
-                            listOf(CssRule("table", mapOf("width" to "600px")))
-                        ),
-                    ),
+                    listOf(CssMsoConditional(listOf(CssRule("table", mapOf("width" to "600px"))))),
             )
         val html = HtmlEmitter.emit(node)
         val styleCount = """<style type="text/css">""".toRegex().findAll(html).count()
@@ -244,7 +228,7 @@ class HtmlEmitterTest {
                                     listOf(CssRule(".btn", mapOf("width" to "100%"))),
                                 )
                             )
-                        ),
+                        )
                     ),
             )
         val html = HtmlEmitter.emit(node)
