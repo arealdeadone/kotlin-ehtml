@@ -485,7 +485,7 @@ class HtmlTagBuilderTest {
         }
         assert("""class="btn-primary"""" in html)
         assert("background-color: #1B7C96" in html)
-        assert("color: #ffffff" in html)
+        assert("color: #fff" in html)
         assert("padding: 10px" in html)
         assert("border-radius: 5px" in html)
         assert("text-decoration: none" in html)
@@ -614,9 +614,9 @@ class HtmlTagBuilderTest {
     @Test
     fun `spacer with zero height`() {
         val html = columnHtml { spacer(0) }
-        assert("height: 0px" in html)
-        assert("font-size: 0px" in html)
-        assert("line-height: 0px" in html)
+        assert("height: 0" in html)
+        assert("font-size: 0" in html)
+        assert("line-height: 0" in html)
     }
 
     @Test

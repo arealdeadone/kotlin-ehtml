@@ -20,4 +20,6 @@ object CssShorthandGroups {
                 left = CssAttribute.MARGIN_LEFT,
             ),
         )
+    val HEX_COLLAPSE_REGEX = Regex("#([0-9a-fA-F])\\1([0-9a-fA-F])\\2([0-9a-fA-F])\\3")
+    val ZERO_PX_REGEX = Regex("\\b0px\\b")
 }

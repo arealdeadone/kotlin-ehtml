@@ -160,8 +160,8 @@ class ApiTest {
         }
         assert("font-size: 1px" in html)
         assert("line-height: 1px" in html)
-        assert("max-height: 0px" in html)
-        assert("max-width: 0px" in html)
+        assert("max-height: 0" in html)
+        assert("max-width: 0" in html)
         assert("opacity: 0" in html)
         assert("overflow: hidden" in html)
     }

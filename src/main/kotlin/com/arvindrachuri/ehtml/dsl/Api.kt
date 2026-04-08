@@ -40,7 +40,5 @@ fun emailDocument(block: EmailBuilder.() -> Unit): EmailDocumentNode {
     val inlined = CssInliningPass.run(treeShaken)
     val treeShakeSecondPass = CssTreeShakePass.run(inlined)
 
-    return treeShakeSecondPass.copy(
-        headStyles = CssOptimizationPass.run(treeShakeSecondPass.headStyles)
-    )
+    return CssOptimizationPass.run(treeShakeSecondPass)
 }

@@ -4,13 +4,41 @@ import com.arvindrachuri.ehtml.ast.CssMediaQuery
 import com.arvindrachuri.ehtml.ast.CssMsoConditional
 import com.arvindrachuri.ehtml.ast.CssNode
 import com.arvindrachuri.ehtml.ast.CssRule
+import com.arvindrachuri.ehtml.ast.ElementNode
+import com.arvindrachuri.ehtml.ast.EmailDocumentNode
+import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.utils.css.constants.CssShorthandGroups
+import com.arvindrachuri.ehtml.utils.css.constants.CssShorthandGroups.HEX_COLLAPSE_REGEX
+import com.arvindrachuri.ehtml.utils.css.constants.CssShorthandGroups.ZERO_PX_REGEX
 import kotlin.collections.iterator
 
 object CssOptimizationPass {
 
-    fun run(nodes: List<CssNode>): List<CssNode> =
-        nodes.let(::mergeDuplicateSelectors).let(::dedupIdenticalStyles).let(::collapseShorthands)
+    fun run(document: EmailDocumentNode): EmailDocumentNode {
+        val optimizedHeadStyles =
+            document.headStyles
+                .let(::mergeDuplicateSelectors)
+                .let(::dedupIdenticalStyles)
+                .let(::collapseShorthands)
+                .let(::minifyValues)
+        val optimizedChildren = document.children.map(::minifyNode)
+        return document.copy(headStyles = optimizedHeadStyles, children = optimizedChildren)
+    }
+
+    private fun minifyNode(node: EmailNode): EmailNode =
+        when (node) {
+            is ElementNode ->
+                node.copy(
+                    styles = minifyStyles(node.styles),
+                    children = node.children.map(::minifyNode),
+                )
+            else -> node
+        }
+
+    private fun minifyStyles(styles: Map<String, String>): Map<String, String> =
+        styles.mapValues { (_, v) ->
+            collapseHexColors(trimZeros(v))
+        }
 
     private fun mergeDuplicateSelectors(nodes: List<CssNode>): List<CssNode> {
         val seen = mutableMapOf<String, MutableMap<String, String>>()
@@ -102,4 +130,23 @@ object CssOptimizationPass {
         }
         return result
     }
+
+    private fun minifyValues(nodes: List<CssNode>): List<CssNode> = nodes.map { node ->
+        when (node) {
+            is CssRule ->
+                CssRule(
+                    node.selector,
+                    node.styles.mapValues { (_, v) -> collapseHexColors(trimZeros(v)) },
+                )
+            is CssMediaQuery -> CssMediaQuery(node.condition, minifyValues(node.rules))
+            is CssMsoConditional -> CssMsoConditional(minifyValues(node.rules))
+        }
+    }
+
+    private fun collapseHexColors(value: String): String =
+        HEX_COLLAPSE_REGEX.replace(value) { m ->
+            "#${m.groupValues[1]}${m.groupValues[2]}${m.groupValues[3]}"
+        }
+
+    private fun trimZeros(value: String): String = ZERO_PX_REGEX.replace(value, "0")
 }

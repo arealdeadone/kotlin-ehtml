@@ -3,6 +3,7 @@ package com.arvindrachuri.ehtml.example
 import com.arvindrachuri.ehtml.dsl.builders.html.ColumnBuilder
 import com.arvindrachuri.ehtml.dsl.builders.html.ContainerBuilder
 import com.arvindrachuri.ehtml.utils.css.values.WhiteSpaceType
+import java.util.UUID
 
 object Fonts {
     const val HEADING = "'Comfortaa', Helvetica, sans-serif"
@@ -179,7 +180,7 @@ fun ContainerBuilder.planCard(plan: Plan) {
                 +plan.details
             }
             spacer(8)
-            ctaButton(plan.ctaText, plan.ctaUrl)
+            ctaButton(plan.ctaText, plan.ctaUrl, "cta-${UUID.randomUUID()}")
         }
     }
 }
