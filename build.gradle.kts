@@ -9,11 +9,21 @@ plugins {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("gpr") {
             groupId = "com.arvindrachuri"
             artifactId = "kotlin-ehtml"
-            version = "0.1.0-alpha"
+            version = findProperty("publishVersion")?.toString() ?: project.version.toString()
             from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/arealdeadone/kotlin-ehtml")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }

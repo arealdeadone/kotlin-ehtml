@@ -19,6 +19,6 @@ jobs:
         name: Setup JDK
         with:
           distribution: 'zulu'
-          java-version: '21'
+          java-version: '17'
       - name: Build Project
         run: ./gradlew build
