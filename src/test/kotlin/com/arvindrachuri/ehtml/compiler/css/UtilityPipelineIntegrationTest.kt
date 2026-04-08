@@ -290,8 +290,14 @@ class UtilityPipelineIntegrationTest {
                 }
             }
             single {
-                div { className = "main"; +"content" }
-                div { className = "mso-only"; +"mso content" }
+                div {
+                    className = "main"
+                    +"content"
+                }
+                div {
+                    className = "mso-only"
+                    +"mso content"
+                }
             }
         }
         assertTrue("color: red" in html)

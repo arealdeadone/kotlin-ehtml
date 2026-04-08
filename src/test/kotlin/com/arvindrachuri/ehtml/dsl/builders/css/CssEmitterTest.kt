@@ -16,7 +16,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single { div { className = "custom"; +"x" } }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
+            }
         }
         assert("""<style type="text/css">""" in html)
         assert("</style>" in html)
@@ -29,7 +34,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single { div { className = "custom"; +"x" } }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
+            }
         }
         val stylePos = html.indexOf("<style")
         val headClosePos = html.indexOf("</head>")
@@ -49,7 +59,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { classSelector("custom") { width = "100%" } }
             }
-            single { div { className = "custom"; +"x" } }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
+            }
         }
         assert("width: 100%" in html)
     }
@@ -61,7 +76,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { idSelector("outlook") { padding = "0" } }
             }
-            single { div { id = "outlook"; +"x" } }
+            single {
+                div {
+                    id = "outlook"
+                    +"x"
+                }
+            }
         }
         assert("padding: 0" in html)
     }
@@ -83,9 +103,7 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style {
-                    tagSelector(HtmlTagSelector.P) { margin = "0" }
-                }
+                style { tagSelector(HtmlTagSelector.P) { margin = "0" } }
             }
             single {
                 p { +"first" }
@@ -253,8 +271,14 @@ class CssEmitterTest {
                 }
             }
             single {
-                div { className = "a"; +"x" }
-                div { className = "b"; +"y" }
+                div {
+                    className = "a"
+                    +"x"
+                }
+                div {
+                    className = "b"
+                    +"y"
+                }
             }
         }
         assert("color: #333" in html)
@@ -288,9 +312,7 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style {
-                    tagSelector(HtmlTagSelector.Column) { padding = "5px" }
-                }
+                style { tagSelector(HtmlTagSelector.Column) { padding = "5px" } }
             }
             container { row { column { +"x" } } }
         }
@@ -304,7 +326,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single { div { className = "custom"; +"x" } }
+            single {
+                div {
+                    className = "custom"
+                    +"x"
+                }
+            }
         }
         assert(doc.headStyles.isNotEmpty())
     }
@@ -324,7 +351,16 @@ class CssEmitterTest {
                     }
                 }
             }
-            container { row { column { div { className = "custom"; +"Hello" } } } }
+            container {
+                row {
+                    column {
+                        div {
+                            className = "custom"
+                            +"Hello"
+                        }
+                    }
+                }
+            }
         }
         assert("<title>Full Test</title>" in html)
         assert("@media (max-width: 630px)" in html)

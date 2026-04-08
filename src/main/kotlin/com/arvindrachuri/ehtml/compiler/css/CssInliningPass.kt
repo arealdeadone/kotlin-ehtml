@@ -50,10 +50,11 @@ object CssInliningPass {
             node.attributes["class"]?.split(" ")?.filter(String::isNotBlank) ?: emptyList()
         val remainingClasses = currentClasses.filter { it !in inlineableClasses }
 
-        val newAttributes = node.attributes.toMutableMap().apply {
-            if (remainingClasses.isEmpty()) remove("class")
-            else put("class", remainingClasses.joinToString(" "))
-        }
+        val newAttributes =
+            node.attributes.toMutableMap().apply {
+                if (remainingClasses.isEmpty()) remove("class")
+                else put("class", remainingClasses.joinToString(" "))
+            }
 
         return node.copy(
             attributes = newAttributes,
