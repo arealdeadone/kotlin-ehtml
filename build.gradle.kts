@@ -21,8 +21,10 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/arealdeadone/kotlin-ehtml")
             credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+                username =
+                    project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
+                password =
+                    project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
             }
         }
     }
@@ -37,7 +39,7 @@ version = "0.1.0"
 repositories { mavenCentral() }
 
 dependencies {
-    api("org.owasp.encoder:encoder:1.4.0")
+    implementation("org.owasp.encoder:encoder:1.4.0")
     testImplementation(kotlin("test"))
 }
 

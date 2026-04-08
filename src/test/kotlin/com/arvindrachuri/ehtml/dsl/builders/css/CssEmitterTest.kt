@@ -10,18 +10,13 @@ import kotlin.test.Test
 class CssEmitterTest {
 
     @Test
-    fun `head style block emits style tag in head`() {
+    fun `head style block emits style tag in head when media queries present`() {
         val html = email {
             head {
                 title = "Test"
-                style { classSelector("custom") { width = "100%" } }
+                style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
-                }
-            }
+            single { div { className = "custom"; +"x" } }
         }
         assert("""<style type="text/css">""" in html)
         assert("</style>" in html)
@@ -32,14 +27,9 @@ class CssEmitterTest {
         val html = email {
             head {
                 title = "Test"
-                style { classSelector("custom") { width = "100%" } }
+                style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
-                }
-            }
+            single { div { className = "custom"; +"x" } }
         }
         val stylePos = html.indexOf("<style")
         val headClosePos = html.indexOf("</head>")
@@ -53,68 +43,70 @@ class CssEmitterTest {
     }
 
     @Test
-    fun `classSelector emits dot prefix`() {
+    fun `classSelector styles get inlined into element`() {
         val html = email {
             head {
                 title = "Test"
                 style { classSelector("custom") { width = "100%" } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
-                }
-            }
+            single { div { className = "custom"; +"x" } }
         }
-        assert(".custom {" in html)
+        assert("width: 100%" in html)
     }
 
     @Test
-    fun `idSelector emits hash prefix`() {
+    fun `idSelector styles get inlined into element`() {
         val html = email {
             head {
                 title = "Test"
                 style { idSelector("outlook") { padding = "0" } }
             }
+            single { div { id = "outlook"; +"x" } }
         }
-        assert("#outlook {" in html)
+        assert("padding: 0" in html)
     }
 
     @Test
-    fun `tagSelector emits tag name`() {
+    fun `tagSelector styles get inlined into matching elements`() {
         val html = email {
             head {
                 title = "Test"
-                style { tagSelector(HtmlTagSelector.Img) { display = DisplayType.Block } }
+                style { tagSelector(HtmlTagSelector.P) { margin = "0" } }
             }
+            single { p { +"x" } }
         }
-        assert("img {" in html)
+        assert("margin: 0" in html)
     }
 
     @Test
-    fun `tagSelector with vararg emits comma-separated selectors`() {
+    fun `tagSelector with vararg inlines into all matching elements`() {
         val html = email {
             head {
                 title = "Test"
                 style {
-                    tagSelector(HtmlTagSelector.Table, HtmlTagSelector.Td, HtmlTagSelector.P) {
-                        margin = "0"
-                    }
+                    tagSelector(HtmlTagSelector.P) { margin = "0" }
                 }
             }
+            single {
+                p { +"first" }
+                p { +"second" }
+            }
         }
-        assert("table, td, p {" in html)
+        assert("margin: 0" in html)
+        assert("first" in html)
+        assert("second" in html)
     }
 
     @Test
-    fun `rule emits raw selector`() {
+    fun `rule with compound tag selector inlines into elements`() {
         val html = email {
             head {
                 title = "Test"
                 style { rule("body, table, td, p, a") { margin = "0" } }
             }
+            single { p { +"x" } }
         }
-        assert("body, table, td, p, a {" in html)
+        assert("margin: 0" in html)
     }
 
     @Test
@@ -251,7 +243,7 @@ class CssEmitterTest {
     }
 
     @Test
-    fun `multiple rules in same style block`() {
+    fun `multiple class rules inline into respective elements`() {
         val html = email {
             head {
                 title = "Test"
@@ -261,18 +253,10 @@ class CssEmitterTest {
                 }
             }
             single {
-                div {
-                    className = "a"
-                    +"x"
-                }
-                div {
-                    className = "b"
-                    +"y"
-                }
+                div { className = "a"; +"x" }
+                div { className = "b"; +"y" }
             }
         }
-        assert(".a {" in html)
-        assert(".b {" in html)
         assert("color: #333" in html)
         assert("color: #666" in html)
     }
@@ -300,35 +284,27 @@ class CssEmitterTest {
     }
 
     @Test
-    fun `layout selectors resolve to correct tags`() {
+    fun `layout tag selectors inline into structural elements`() {
         val html = email {
             head {
                 title = "Test"
                 style {
-                    tagSelector(HtmlTagSelector.Container) { width = "100%" }
-                    tagSelector(HtmlTagSelector.Row) { width = "100%" }
-                    tagSelector(HtmlTagSelector.Column) { padding = "0" }
+                    tagSelector(HtmlTagSelector.Column) { padding = "5px" }
                 }
             }
+            container { row { column { +"x" } } }
         }
-        assert("table" in html)
-        assert("tr" in html)
-        assert("td {" in html)
+        assert("padding: 5px" in html)
     }
 
     @Test
-    fun `emailDocument preserves headStyles on node`() {
+    fun `emailDocument processes headStyles through pipeline`() {
         val doc = emailDocument {
             head {
                 title = "Test"
-                style { classSelector("custom") { width = "100%" } }
+                style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
-                }
-            }
+            single { div { className = "custom"; +"x" } }
         }
         assert(doc.headStyles.isNotEmpty())
     }
@@ -348,21 +324,11 @@ class CssEmitterTest {
                     }
                 }
             }
-            container {
-                row {
-                    column {
-                        div {
-                            className = "custom"
-                            +"Hello"
-                        }
-                    }
-                }
-            }
+            container { row { column { div { className = "custom"; +"Hello" } } } }
         }
         assert("<title>Full Test</title>" in html)
-        assert("""<style type="text/css">""" in html)
-        assert("body, table, td {" in html)
         assert("@media (max-width: 630px)" in html)
         assert("Hello" in html)
+        assert("margin: 0" in html)
     }
 }

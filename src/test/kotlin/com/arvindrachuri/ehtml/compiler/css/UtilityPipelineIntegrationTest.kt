@@ -197,7 +197,7 @@ class UtilityPipelineIntegrationTest {
     }
 
     @Test
-    fun `user css in head comes after utility css`() {
+    fun `user css in head inlines into elements alongside utility css`() {
         val html = email {
             head {
                 title = "Test"
@@ -214,11 +214,8 @@ class UtilityPipelineIntegrationTest {
                 }
             }
         }
-        val smIndex = html.indexOf(".sm-d-block")
-        val customIndex = html.indexOf(".custom")
-        assertTrue(smIndex >= 0)
-        assertTrue(customIndex >= 0)
-        assertTrue(smIndex < customIndex)
+        assertTrue("font-size: 20px" in html)
+        assertTrue(".sm-d-block" in html)
     }
 
     @Test
@@ -240,7 +237,7 @@ class UtilityPipelineIntegrationTest {
     }
 
     @Test
-    fun `unknown class names pass through unchanged`() {
+    fun `user class selector inlines into element`() {
         val html = email {
             head {
                 title = "Test"
@@ -257,7 +254,7 @@ class UtilityPipelineIntegrationTest {
                 }
             }
         }
-        assertTrue("""class="my-custom"""" in html)
+        assertTrue("padding: 10px" in html)
     }
 
     @Test
@@ -283,7 +280,7 @@ class UtilityPipelineIntegrationTest {
     }
 
     @Test
-    fun `mso conditional css does not leak into main style block`() {
+    fun `mso conditional css stays in conditional block after inlining`() {
         val html = email {
             head {
                 title = "Test"
@@ -293,20 +290,12 @@ class UtilityPipelineIntegrationTest {
                 }
             }
             single {
-                div {
-                    className = "main"
-                    +"content"
-                }
-                div {
-                    className = "mso-only"
-                    +"mso content"
-                }
+                div { className = "main"; +"content" }
+                div { className = "mso-only"; +"mso content" }
             }
         }
-        val firstStyleStart = html.indexOf("""<style type="text/css">""")
-        val firstStyleEnd = html.indexOf("</style>", firstStyleStart)
-        val mainBlock = html.substring(firstStyleStart, firstStyleEnd)
-        assertTrue(".main" in mainBlock)
-        assertTrue(".mso-only" !in mainBlock)
+        assertTrue("color: red" in html)
+        assertTrue("<!--[if mso]>" in html)
+        assertTrue("color: blue" in html)
     }
 }

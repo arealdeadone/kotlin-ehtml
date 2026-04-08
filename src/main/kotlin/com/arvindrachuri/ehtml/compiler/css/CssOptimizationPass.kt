@@ -68,8 +68,8 @@ object CssOptimizationPass {
         return result
     }
 
-    private fun collapseShorthands(nodes: List<CssNode>): List<CssNode>  = nodes.map { node ->
-        when(node) {
+    private fun collapseShorthands(nodes: List<CssNode>): List<CssNode> = nodes.map { node ->
+        when (node) {
             is CssRule -> CssRule(node.selector, collapseStyles(node.styles))
             is CssMediaQuery -> CssMediaQuery(node.condition, collapseShorthands(node.rules))
             is CssMsoConditional -> CssMsoConditional(collapseShorthands(node.rules))
@@ -84,14 +84,15 @@ object CssOptimizationPass {
             val bottom = result[group.bottom] ?: continue
             val left = result[group.left] ?: continue
 
-            if(group.shorthand in result) continue
+            if (group.shorthand in result) continue
 
-            val shorthand = when {
-                top == right && right == bottom && bottom == left -> top
-                top == bottom && right == left -> "$top $right"
-                right == left -> "$top $right $bottom"
-                else -> "$top $right $bottom $left"
-            }
+            val shorthand =
+                when {
+                    top == right && right == bottom && bottom == left -> top
+                    top == bottom && right == left -> "$top $right"
+                    right == left -> "$top $right $bottom"
+                    else -> "$top $right $bottom $left"
+                }
 
             result[group.shorthand] = shorthand
             result.remove(group.top)

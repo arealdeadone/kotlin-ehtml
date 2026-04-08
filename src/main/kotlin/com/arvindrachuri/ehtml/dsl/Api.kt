@@ -3,6 +3,7 @@ package com.arvindrachuri.ehtml.dsl
 import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.compiler.HtmlEmitter
 import com.arvindrachuri.ehtml.compiler.css.CssClassCollector
+import com.arvindrachuri.ehtml.compiler.css.CssInliningPass
 import com.arvindrachuri.ehtml.compiler.css.CssOptimizationPass
 import com.arvindrachuri.ehtml.compiler.css.CssTreeShakePass
 import com.arvindrachuri.ehtml.compiler.css.UtilityClassResolver
@@ -36,6 +37,10 @@ fun emailDocument(block: EmailBuilder.() -> Unit): EmailDocumentNode {
             backgroundColor = builder.backgroundColor,
         )
     val treeShaken = CssTreeShakePass.run(document)
+    val inlined = CssInliningPass.run(treeShaken)
+    val treeShakeSecondPass = CssTreeShakePass.run(inlined)
 
-    return treeShaken.copy(headStyles = CssOptimizationPass.run(treeShaken.headStyles))
+    return treeShakeSecondPass.copy(
+        headStyles = CssOptimizationPass.run(treeShakeSecondPass.headStyles)
+    )
 }
