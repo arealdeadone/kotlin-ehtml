@@ -1,11 +1,13 @@
 import com.ncorti.ktfmt.gradle.tasks.KtfmtFormatTask
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinJvm
+import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.9.20"
     id("com.ncorti.ktfmt.gradle") version "0.26.0"
+    id("com.vanniktech.maven.publish") version "0.30.0"
     jacoco
-    `maven-publish`
-    signing
     `java-library`
 }
 
@@ -13,71 +15,38 @@ group = "com.arvindrachuri"
 
 version = findProperty("publishVersion")?.toString() ?: "0.1.0-SNAPSHOT"
 
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
+mavenPublishing {
+    configure(KotlinJvm(javadocJar = JavadocJar.Empty()))
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.arvindrachuri"
-            artifactId = "kotlin-ehtml"
-            from(components["java"])
+    coordinates("com.arvindrachuri", "kotlin-ehtml", version.toString())
 
-            pom {
-                name.set("kotlin-ehtml")
-                description.set("Kotlin DSL for composing email-safe HTML with a compiler pipeline")
-                url.set("https://github.com/arealdeadone/kotlin-ehtml")
+    pom {
+        name.set("kotlin-ehtml")
+        description.set("Kotlin DSL for composing email-safe HTML with a compiler pipeline")
+        url.set("https://github.com/arealdeadone/kotlin-ehtml")
 
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-
-                developers {
-                    developer {
-                        id.set("arealdeadone")
-                        name.set("Arvind Rachuri")
-                        url.set("https://github.com/arealdeadone")
-                    }
-                }
-
-                scm {
-                    url.set("https://github.com/arealdeadone/kotlin-ehtml")
-                    connection.set("scm:git:git://github.com/arealdeadone/kotlin-ehtml.git")
-                    developerConnection.set(
-                        "scm:git:ssh://github.com/arealdeadone/kotlin-ehtml.git"
-                    )
-                }
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
             }
         }
-    }
 
-    repositories {
-        maven {
-            name = "OSSRH"
-            url =
-                if (version.toString().endsWith("-SNAPSHOT"))
-                    uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                else uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-
-            credentials {
-                username = System.getenv("MAVEN_USERNAME") ?: ""
-                password = System.getenv("MAVEN_PASSWORD") ?: ""
+        developers {
+            developer {
+                id.set("arealdeadone")
+                name.set("Arvind Rachuri")
+                url.set("https://github.com/arealdeadone")
             }
         }
-    }
-}
 
-signing {
-    val signingKey = System.getenv("GPG_SIGNING_KEY")
-    val signingPassword = System.getenv("GPG_SIGNING_PASSWORD")
-    if (signingKey != null && signingPassword != null) {
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign(publishing.publications["maven"])
+        scm {
+            url.set("https://github.com/arealdeadone/kotlin-ehtml")
+            connection.set("scm:git:git://github.com/arealdeadone/kotlin-ehtml.git")
+            developerConnection.set("scm:git:ssh://github.com/arealdeadone/kotlin-ehtml.git")
+        }
     }
 }
 
