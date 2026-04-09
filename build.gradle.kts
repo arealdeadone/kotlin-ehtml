@@ -5,41 +5,86 @@ plugins {
     id("com.ncorti.ktfmt.gradle") version "0.26.0"
     jacoco
     `maven-publish`
+    signing
+    `java-library`
+}
+
+group = "com.arvindrachuri"
+
+version = findProperty("publishVersion")?.toString() ?: "0.1.0-SNAPSHOT"
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
     publications {
-        create<MavenPublication>("gpr") {
+        create<MavenPublication>("maven") {
             groupId = "com.arvindrachuri"
             artifactId = "kotlin-ehtml"
-            version = findProperty("publishVersion")?.toString() ?: project.version.toString()
             from(components["java"])
+
+            pom {
+                name.set("kotlin-ehtml")
+                description.set("Kotlin DSL for composing email-safe HTML with a compiler pipeline")
+                url.set("https://github.com/arealdeadone/kotlin-ehtml")
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("arealdeadone")
+                        name.set("Arvind Rachuri")
+                        url.set("https://github.com/arealdeadone")
+                    }
+                }
+
+                scm {
+                    url.set("https://github.com/arealdeadone/kotlin-ehtml")
+                    connection.set("scm:git:git://github.com/arealdeadone/kotlin-ehtml.git")
+                    developerConnection.set(
+                        "scm:git:ssh://github.com/arealdeadone/kotlin-ehtml.git"
+                    )
+                }
+            }
         }
     }
+
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/arealdeadone/kotlin-ehtml")
+            name = "OSSRH"
+            url =
+                if (version.toString().endsWith("-SNAPSHOT"))
+                    uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                else uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+
             credentials {
-                username =
-                    project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
-                password =
-                    project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+                username = System.getenv("MAVEN_USERNAME") ?: ""
+                password = System.getenv("MAVEN_PASSWORD") ?: ""
             }
         }
     }
 }
 
-java { withSourcesJar() }
-
-group = "com.arvindrachuri"
-
-version = "0.1.0"
+signing {
+    val signingKey = System.getenv("GPG_SIGNING_KEY")
+    val signingPassword = System.getenv("GPG_SIGNING_PASSWORD")
+    if (signingKey != null && signingPassword != null) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["maven"])
+    }
+}
 
 repositories { mavenCentral() }
 
 dependencies {
-    implementation("org.owasp.encoder:encoder:1.4.0")
+    api("org.owasp.encoder:encoder:1.4.0")
     testImplementation(kotlin("test"))
 }
 
