@@ -501,6 +501,39 @@ class HtmlTagBuilderTest {
     }
 
     @Test
+    fun `img with utility classes text-center and p-16 applies styles`() {
+        val html = columnHtml {
+            img(src = "photo.jpg", alt = "Photo") { className = "text-center p-16" }
+        }
+        assert("text-align: center" in html)
+        assert("padding: 16px" in html)
+    }
+
+    @Test
+    fun `img with d-inline and w-100 utility classes applies styles`() {
+        val html = columnHtml {
+            img(src = "logo.png", alt = "Logo") { className = "d-inline w-100" }
+        }
+        val imgTag = Regex("""<img[^>]*/>""").find(html)?.value ?: ""
+        assert("display: inline" in imgTag)
+        assert("width: 100%" in imgTag)
+    }
+
+    @Test
+    fun `img utility classes override default styles but user styles still win`() {
+        val html = columnHtml {
+            img(src = "logo.png", alt = "Logo") {
+                className = "d-inline"
+                style { border = "2px solid red" }
+            }
+        }
+        val imgTag = Regex("""<img[^>]*/>""").find(html)?.value ?: ""
+        assert("display: inline" in imgTag)
+        assert("border: 2px solid red" in imgTag)
+        assert("border: 0" !in imgTag)
+    }
+
+    @Test
     fun `img with width and height params renders attributes and styles`() {
         val html = columnHtml { img(src = "photo.jpg", alt = "Photo", width = 290, height = 288) }
         assert("""width="290"""" in html)
