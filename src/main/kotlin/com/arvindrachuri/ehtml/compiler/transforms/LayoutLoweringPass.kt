@@ -26,8 +26,19 @@ object LayoutLoweringPass {
             is RawHtmlNode -> node
         }
 
+    private val PADDING_PROPERTIES =
+        setOf(
+            CssAttribute.PADDING,
+            CssAttribute.PADDING_TOP,
+            CssAttribute.PADDING_RIGHT,
+            CssAttribute.PADDING_BOTTOM,
+            CssAttribute.PADDING_LEFT,
+        )
+
     private fun lowerContainer(node: ContainerNode): EmailNode {
         val loweredChildren = node.children.map(::run)
+        val paddingStyles = node.styles.filterKeys { it in PADDING_PROPERTIES }
+        val tableStyles = node.styles.filterKeys { it !in PADDING_PROPERTIES }
 
         return table(
             attributes =
@@ -47,10 +58,20 @@ object LayoutLoweringPass {
                 },
             styles =
                 mapOf(CssAttribute.MARGIN to "0 auto", CssAttribute.WIDTH to "${node.width}px") +
-                    node.styles,
+                    tableStyles,
             children =
                 listOf(
-                    tbody(children = listOf(tr(children = listOf(td(children = loweredChildren)))))
+                    tbody(
+                        children =
+                            listOf(
+                                tr(
+                                    children =
+                                        listOf(
+                                            td(styles = paddingStyles, children = loweredChildren)
+                                        )
+                                )
+                            )
+                    )
                 ),
         )
     }
@@ -62,7 +83,7 @@ object LayoutLoweringPass {
                     is ColumnNode -> lowerColumn(child)
                     else ->
                         td(
-                            styles =
+                            defaultStyles =
                                 mapOf(
                                     CssAttribute.PADDING to "0",
                                     CssAttribute.VERTICAL_ALIGN to VerticalAlignType.Top.value,
@@ -97,13 +118,13 @@ object LayoutLoweringPass {
                     putAll(node.attributes)
                     node.widthPercent?.let { put("width", "$it%") }
                 },
-            styles =
+            defaultStyles =
                 buildMap {
                     put(CssAttribute.PADDING, "0")
                     put(CssAttribute.VERTICAL_ALIGN, VerticalAlignType.Top.value)
                     node.widthPercent?.let { put(CssAttribute.WIDTH, "$it%") }
-                    putAll(node.styles)
                 },
+            styles = node.styles,
             children = node.children.map(::run),
         )
 
@@ -137,12 +158,14 @@ object LayoutLoweringPass {
     private fun td(
         attributes: Map<String, String> = emptyMap(),
         styles: Map<String, String> = emptyMap(),
+        defaultStyles: Map<String, String> = emptyMap(),
         children: List<EmailNode> = emptyList(),
     ) =
         ElementNode(
             tag = HtmlContainerTag.TD,
             attributes = attributes,
             styles = styles,
+            defaultStyles = defaultStyles,
             children = children,
         )
 }

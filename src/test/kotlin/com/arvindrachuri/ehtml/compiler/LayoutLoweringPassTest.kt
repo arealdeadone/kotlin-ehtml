@@ -607,4 +607,81 @@ class LayoutLoweringPassTest {
         assert("""class="custom-row"""" in html)
         assert("""class="custom-col"""" in html)
     }
+
+    @Test
+    fun `column default padding can be overridden by user style`() {
+        val node =
+            ColumnNode(styles = mapOf("padding" to "24px"), children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("padding: 24px" in html)
+        assert("padding: 0" !in html)
+    }
+
+    @Test
+    fun `column default vertical-align can be overridden by user style`() {
+        val node =
+            ColumnNode(
+                styles = mapOf("vertical-align" to "bottom"),
+                children = listOf(TextNode("content")),
+            )
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("vertical-align: bottom" in html)
+        assert("vertical-align: top" !in html)
+    }
+
+    @Test
+    fun `column preserves default padding when no override`() {
+        val node = ColumnNode(children = listOf(TextNode("content")))
+        val lowered = LayoutLoweringPass.run(node)
+        val html = HtmlEmitter.emit(lowered)
+        assert("padding: 0" in html)
+        assert("vertical-align: top" in html)
+    }
+
+    @Test
+    fun `container padding flows to inner wrapping td`() {
+        val node =
+            ContainerNode(
+                styles = mapOf("padding" to "16px"),
+                children = listOf(TextNode("content")),
+            )
+        val lowered = LayoutLoweringPass.run(node) as ElementNode
+        val html = HtmlEmitter.emit(lowered)
+        val tds = Regex("<td[^>]*>").findAll(html).toList()
+        val innerTd = tds.first().value
+        assert("padding: 16px" in innerTd)
+    }
+
+    @Test
+    fun `container padding does not go on outer table`() {
+        val node =
+            ContainerNode(
+                styles = mapOf("padding" to "16px", "background-color" to "#fff"),
+                children = listOf(TextNode("content")),
+            )
+        val lowered = LayoutLoweringPass.run(node) as ElementNode
+        assert("padding" !in HtmlEmitter.emit(ElementNode(tag = "x", styles = lowered.styles)))
+        assert(
+            "background-color" in HtmlEmitter.emit(ElementNode(tag = "x", styles = lowered.styles))
+        )
+    }
+
+    @Test
+    fun `column p-16 utility class overrides default padding in full pipeline`() {
+        val html =
+            com.arvindrachuri.ehtml.dsl.email {
+                head { title = "Test" }
+                container {
+                    row {
+                        column {
+                            className = "p-16"
+                            +"content"
+                        }
+                    }
+                }
+            }
+        assert("padding: 16px" in html)
+    }
 }
