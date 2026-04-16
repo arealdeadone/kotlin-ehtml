@@ -8,6 +8,7 @@ data class ElementNode(
     val tag: String,
     val attributes: Map<String, String> = emptyMap(),
     val styles: Map<String, String> = emptyMap(),
+    val defaultStyles: Map<String, String> = emptyMap(),
     val children: List<EmailNode> = emptyList(),
 ) : EmailNode
 

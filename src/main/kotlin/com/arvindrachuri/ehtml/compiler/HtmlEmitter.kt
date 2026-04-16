@@ -75,11 +75,12 @@ object HtmlEmitter {
     private fun StringBuilder.appendElement(node: ElementNode) {
         append('<').append(node.tag)
 
+        val effectiveStyles = node.defaultStyles + node.styles
         val mergedAttributes = buildMap {
             putAll(node.attributes)
 
-            if (node.styles.isNotEmpty()) {
-                put("style", serializeStyles(node.styles))
+            if (effectiveStyles.isNotEmpty()) {
+                put("style", serializeStyles(effectiveStyles))
             }
         }
 

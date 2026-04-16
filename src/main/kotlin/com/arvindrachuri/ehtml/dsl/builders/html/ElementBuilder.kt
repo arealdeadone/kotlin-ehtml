@@ -15,6 +15,7 @@ class ElementBuilder(
 
     private val children = mutableListOf<EmailNode>()
     private var styles = emptyMap<String, String>()
+    private var defaultStyles = emptyMap<String, String>()
     private var attributes = mutableMapOf<String, String>()
 
     var className: String? = null
@@ -42,7 +43,7 @@ class ElementBuilder(
     }
 
     fun applyDefaultStyles(defaults: Map<String, String>) {
-        styles = defaults + styles
+        defaultStyles = defaults + defaultStyles
     }
 
     fun build(): ElementNode =
@@ -56,6 +57,7 @@ class ElementBuilder(
                     putAll(requiredAttributes)
                 },
             styles = styles,
+            defaultStyles = defaultStyles,
             children = children,
         )
 }
