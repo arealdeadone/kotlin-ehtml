@@ -13,89 +13,28 @@ object UtilityInliningPass {
         when (node) {
             is EmailDocumentNode ->
                 node.copy(children = node.children.map { run(it, inlineStyles) })
-            is ElementNode -> {
-                val (attrs, styles, children) =
-                    resolveUtilities(
-                        node.attributes,
-                        node.styles,
-                        node.defaultStyles,
-                        node.children,
-                        inlineStyles,
+            is ElementNode ->
+                inlineUtilities(
+                    node.attributes,
+                    node.styles,
+                    node.defaultStyles,
+                    node.children,
+                    inlineStyles,
+                ) { attrs, styles, children ->
+                    node.copy(
+                        attributes = attrs,
+                        styles = styles,
+                        defaultStyles = emptyMap(),
+                        children = children,
                     )
-                node.copy(
-                    attributes = attrs,
-                    styles = styles,
-                    defaultStyles = emptyMap(),
-                    children = children,
-                )
-            }
-            is ContainerNode ->
-                inlineLayoutNode(node.attributes, node.styles, node.children, inlineStyles) {
-                    attrs,
-                    styles,
-                    children ->
-                    node.copy(attributes = attrs, styles = styles, children = children)
-                }
-            is RowNode ->
-                inlineLayoutNode(node.attributes, node.styles, node.children, inlineStyles) {
-                    attrs,
-                    styles,
-                    children ->
-                    node.copy(attributes = attrs, styles = styles, children = children)
-                }
-            is ColumnNode ->
-                inlineLayoutNode(node.attributes, node.styles, node.children, inlineStyles) {
-                    attrs,
-                    styles,
-                    children ->
-                    node.copy(attributes = attrs, styles = styles, children = children)
                 }
             else -> node
         }
 
-    private data class ResolvedNode(
-        val attributes: Map<String, String>,
-        val styles: Map<String, String>,
-        val children: List<EmailNode>,
-    )
-
-    private fun resolveUtilities(
-        attributes: Map<String, String>,
-        userStyles: Map<String, String>,
-        defaultStyles: Map<String, String>,
-        children: List<EmailNode>,
-        inlineStyles: Map<String, Map<String, String>>,
-    ): ResolvedNode {
-        val classNames =
-            attributes[HtmlTagAttributes.CLASS]?.split(" ")?.filter { it.isNotBlank() }
-                ?: emptyList()
-
-        val utilityStyles = mutableMapOf<String, String>()
-        val remainingClasses = mutableListOf<String>()
-
-        for (className in classNames) {
-            val resolved = inlineStyles[className]
-            if (resolved != null) {
-                resolved.forEach { (prop, value) ->
-                    if (prop !in userStyles && prop !in utilityStyles) {
-                        utilityStyles[prop] = value
-                    }
-                }
-            } else remainingClasses.add(className)
-        }
-
-        val newAttributes =
-            if (remainingClasses.isEmpty()) attributes - HtmlTagAttributes.CLASS
-            else attributes + (HtmlTagAttributes.CLASS to remainingClasses.joinToString(" "))
-        val mergedStyles = defaultStyles + utilityStyles + userStyles
-        val processedChildren = children.map { run(it, inlineStyles) }
-
-        return ResolvedNode(newAttributes, mergedStyles, processedChildren)
-    }
-
-    private fun <T : EmailNode> inlineLayoutNode(
+    private fun <T : EmailNode> inlineUtilities(
         attributes: Map<String, String>,
         styles: Map<String, String>,
+        defaultStyles: Map<String, String>,
         children: List<EmailNode>,
         inlineStyles: Map<String, Map<String, String>>,
         rebuild: (Map<String, String>, Map<String, String>, List<EmailNode>) -> T,
@@ -121,7 +60,7 @@ object UtilityInliningPass {
         val newAttributes =
             if (remainingClasses.isEmpty()) attributes - HtmlTagAttributes.CLASS
             else attributes + (HtmlTagAttributes.CLASS to remainingClasses.joinToString(" "))
-        val mergedStyles = utilityStyles + styles
+        val mergedStyles = defaultStyles + utilityStyles + styles
         val processedChildren = children.map { run(it, inlineStyles) }
 
         return rebuild(newAttributes, mergedStyles, processedChildren)

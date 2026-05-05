@@ -2,7 +2,12 @@ package com.arvindrachuri.ehtml.compiler.css
 
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BACKGROUND_COLOR
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BORDER
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BORDER_BOTTOM_LEFT_RADIUS
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BORDER_BOTTOM_RIGHT_RADIUS
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BORDER_COLOR
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BORDER_RADIUS
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BORDER_TOP_LEFT_RADIUS
+import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.BORDER_TOP_RIGHT_RADIUS
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.COLOR
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.DISPLAY
 import com.arvindrachuri.ehtml.utils.css.constants.CssAttribute.FONT_SIZE
@@ -89,7 +94,13 @@ fun emailUtilityRules(): List<UtilityRule> =
         rule(
             "leading",
             LINE_HEIGHT,
-            named("none" to "1", "tight" to "1.25", "normal" to "1.5", "relaxed" to "1.75"),
+            named(
+                "none" to "1",
+                "tight" to "1.25",
+                "normal" to "1.5",
+                "relaxed" to "1.75",
+                "loose" to "2",
+            ),
         ),
         rule("underline", TEXT_DECORATION, literal("underline")),
         rule("no-underline", TEXT_DECORATION, literal("none")),
@@ -99,6 +110,54 @@ fun emailUtilityRules(): List<UtilityRule> =
         rule(
             "rounded",
             BORDER_RADIUS,
+            named(
+                "" to "4px",
+                "sm" to "2px",
+                "md" to "6px",
+                "lg" to "12px",
+                "full" to "9999px",
+                "none" to "0",
+            ),
+        ),
+        rule(
+            "rounded-t",
+            listOf(BORDER_TOP_LEFT_RADIUS, BORDER_TOP_RIGHT_RADIUS),
+            named(
+                "" to "4px",
+                "sm" to "2px",
+                "md" to "6px",
+                "lg" to "12px",
+                "full" to "9999px",
+                "none" to "0",
+            ),
+        ),
+        rule(
+            "rounded-b",
+            listOf(BORDER_BOTTOM_LEFT_RADIUS, BORDER_BOTTOM_RIGHT_RADIUS),
+            named(
+                "" to "4px",
+                "sm" to "2px",
+                "md" to "6px",
+                "lg" to "12px",
+                "full" to "9999px",
+                "none" to "0",
+            ),
+        ),
+        rule(
+            "rounded-l",
+            listOf(BORDER_TOP_LEFT_RADIUS, BORDER_BOTTOM_LEFT_RADIUS),
+            named(
+                "" to "4px",
+                "sm" to "2px",
+                "md" to "6px",
+                "lg" to "12px",
+                "full" to "9999px",
+                "none" to "0",
+            ),
+        ),
+        rule(
+            "rounded-r",
+            listOf(BORDER_TOP_RIGHT_RADIUS, BORDER_BOTTOM_RIGHT_RADIUS),
             named(
                 "" to "4px",
                 "sm" to "2px",
@@ -130,5 +189,5 @@ fun themeUtilityRules(theme: EmailTheme): List<UtilityRule> = buildList {
     theme.success?.let { addColorToken("success", it) }
     theme.warning?.let { addColorToken("warning", it) }
     theme.error?.let { addColorToken("error", it) }
-    add(rule("border-default", "border-color", literal(theme.border)))
+    add(rule("border-default", BORDER_COLOR, literal(theme.border)))
 }

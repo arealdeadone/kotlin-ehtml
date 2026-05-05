@@ -20,9 +20,6 @@ object CssClassCollector {
         val (attributes, children) =
             when (node) {
                 is ElementNode -> node.attributes to node.children
-                is ContainerNode -> node.attributes to node.children
-                is RowNode -> node.attributes to node.children
-                is ColumnNode -> node.attributes to node.children
                 is EmailDocumentNode -> emptyMap<String, String>() to node.children
                 else -> return
             }
