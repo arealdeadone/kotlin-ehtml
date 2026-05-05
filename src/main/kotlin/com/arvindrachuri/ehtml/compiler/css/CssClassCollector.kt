@@ -1,11 +1,8 @@
 package com.arvindrachuri.ehtml.compiler.css
 
-import com.arvindrachuri.ehtml.ast.ColumnNode
-import com.arvindrachuri.ehtml.ast.ContainerNode
 import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailDocumentNode
 import com.arvindrachuri.ehtml.ast.EmailNode
-import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.utils.HtmlTagAttributes
 
 object CssClassCollector {

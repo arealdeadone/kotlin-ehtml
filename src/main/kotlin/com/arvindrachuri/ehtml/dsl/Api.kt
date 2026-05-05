@@ -22,7 +22,6 @@ fun email(block: EmailBuilder.() -> Unit): String {
 fun emailDocument(block: EmailBuilder.() -> Unit): EmailDocumentNode {
     val builder = EmailBuilder().apply(block)
 
-
     val result = builder.build()
     val lowered = result.children.map(LayoutLoweringPass::run)
     val msoWrapped = lowered.flatMap(MsoConditionalPass::run)
