@@ -21,22 +21,26 @@ fun email(block: EmailBuilder.() -> Unit): String {
 
 fun emailDocument(block: EmailBuilder.() -> Unit): EmailDocumentNode {
     val builder = EmailBuilder().apply(block)
-    val rules = emailUtilityRules() + (builder.theme?.let { themeUtilityRules(it) } ?: emptyList())
-    val resolver = UtilityClassResolver(rules)
+
 
     val result = builder.build()
-    val usedClasses = CssClassCollector.collect(result.children)
-    val resolved = resolver.resolve(usedClasses)
-    val inlinedChildren = result.children.map { UtilityInliningPass.run(it, resolved.inlineStyles) }
+    val lowered = result.children.map(LayoutLoweringPass::run)
+    val msoWrapped = lowered.flatMap(MsoConditionalPass::run)
+
+    val rules = emailUtilityRules() + (builder.theme?.let { themeUtilityRules(it) } ?: emptyList())
+    val usedClasses = CssClassCollector.collect(msoWrapped)
+    val resolved = UtilityClassResolver(rules).resolve(usedClasses)
+
     val document =
         DocumentShellPass.run(
-            body = inlinedChildren.map(LayoutLoweringPass::run).flatMap(MsoConditionalPass::run),
+            body = msoWrapped,
             title = result.title,
             lang = builder.lang,
             headStyles = resolved.headStyles + result.styles,
             backgroundColor = builder.backgroundColor,
         )
-    val treeShaken = CssTreeShakePass.run(document)
+    val utilityInlined = UtilityInliningPass.run(document, resolved.inlineStyles)
+    val treeShaken = CssTreeShakePass.run(utilityInlined as EmailDocumentNode)
     val inlined = CssInliningPass.run(treeShaken)
     val treeShakeSecondPass = CssTreeShakePass.run(inlined)
 
