@@ -84,9 +84,6 @@ class EmailBuilder {
         )
     }
 
-    fun single(block: SingleBuilder.() -> Unit) {
-        children.add(SingleBuilder().apply(block).build())
-    }
 
     fun build(): EmailBuildResult =
         EmailBuildResult(title = headResult.title, styles = headResult.styles, children = children)

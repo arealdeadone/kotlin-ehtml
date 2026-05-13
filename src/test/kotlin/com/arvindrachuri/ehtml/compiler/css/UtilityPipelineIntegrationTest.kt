@@ -267,12 +267,15 @@ class UtilityPipelineIntegrationTest {
                     mso { tagSelector(HtmlTagSelector.Table) { width = "600px" } }
                 }
             }
-            single {
-                div {
-                    className = "btn"
-                    +"content"
+            container {
+                single {
+                    div {
+                        className = "btn"
+                        +"content"
+                    }
                 }
             }
+
         }
         assertTrue("<!--[if mso]>" in html)
         assertTrue("width: 600px" in html)
@@ -289,14 +292,16 @@ class UtilityPipelineIntegrationTest {
                     mso { classSelector("mso-only") { color = "blue" } }
                 }
             }
-            single {
-                div {
-                    className = "main"
-                    +"content"
-                }
-                div {
-                    className = "mso-only"
-                    +"mso content"
+            container {
+                single {
+                    div {
+                        className = "main"
+                        +"content"
+                    }
+                    div {
+                        className = "mso-only"
+                        +"mso content"
+                    }
                 }
             }
         }

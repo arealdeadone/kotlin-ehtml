@@ -16,10 +16,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "custom"
+                        +"x"
+                    }
                 }
             }
         }
@@ -34,10 +36,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "custom"
+                        +"x"
+                    }
                 }
             }
         }
@@ -59,10 +63,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { classSelector("custom") { width = "100%" } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "custom"
+                        +"x"
+                    }
                 }
             }
         }
@@ -76,10 +82,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { idSelector("outlook") { padding = "0" } }
             }
-            single {
-                div {
-                    id = "outlook"
-                    +"x"
+            container {
+                single {
+                    div {
+                        id = "outlook"
+                        +"x"
+                    }
                 }
             }
         }
@@ -93,7 +101,9 @@ class CssEmitterTest {
                 title = "Test"
                 style { tagSelector(HtmlTagSelector.P) { margin = "0" } }
             }
-            single { p { +"x" } }
+            container {
+                single { p { +"x" } }
+            }
         }
         assert("margin: 0" in html)
     }
@@ -105,9 +115,11 @@ class CssEmitterTest {
                 title = "Test"
                 style { tagSelector(HtmlTagSelector.P) { margin = "0" } }
             }
-            single {
-                p { +"first" }
-                p { +"second" }
+            container {
+                single {
+                    p { +"first" }
+                    p { +"second" }
+                }
             }
         }
         assert("margin: 0" in html)
@@ -122,7 +134,9 @@ class CssEmitterTest {
                 title = "Test"
                 style { rule("body, table, td, p, a") { margin = "0" } }
             }
-            single { p { +"x" } }
+            container {
+                single { p { +"x" } }
+            }
         }
         assert("margin: 0" in html)
     }
@@ -139,10 +153,12 @@ class CssEmitterTest {
                     }
                 }
             }
-            single {
-                div {
-                    className = "card"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "card"
+                        +"x"
+                    }
                 }
             }
         }
@@ -157,10 +173,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 630px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "custom"
+                        +"x"
+                    }
                 }
             }
         }
@@ -174,10 +192,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 630px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "custom"
+                        +"x"
+                    }
                 }
             }
         }
@@ -201,10 +221,12 @@ class CssEmitterTest {
                     }
                 }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "custom"
+                        +"x"
+                    }
                 }
             }
         }
@@ -224,10 +246,12 @@ class CssEmitterTest {
                     }
                 }
             }
-            single {
-                div {
-                    className = "card"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "card"
+                        +"x"
+                    }
                 }
             }
         }
@@ -248,10 +272,12 @@ class CssEmitterTest {
                     }
                 }
             }
-            single {
-                div {
-                    className = "override"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "override"
+                        +"x"
+                    }
                 }
             }
         }
@@ -270,14 +296,16 @@ class CssEmitterTest {
                     classSelector("b") { color = "#666" }
                 }
             }
-            single {
-                div {
-                    className = "a"
-                    +"x"
-                }
-                div {
-                    className = "b"
-                    +"y"
+            container {
+                single {
+                    div {
+                        className = "a"
+                        +"x"
+                    }
+                    div {
+                        className = "b"
+                        +"y"
+                    }
                 }
             }
         }
@@ -296,10 +324,12 @@ class CssEmitterTest {
                     }
                 }
             }
-            single {
-                div {
-                    className = "darkmode-bg"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "darkmode-bg"
+                        +"x"
+                    }
                 }
             }
         }
@@ -326,10 +356,12 @@ class CssEmitterTest {
                 title = "Test"
                 style { media("max-width: 600px") { classSelector("custom") { width = "100%" } } }
             }
-            single {
-                div {
-                    className = "custom"
-                    +"x"
+            container {
+                single {
+                    div {
+                        className = "custom"
+                        +"x"
+                    }
                 }
             }
         }
