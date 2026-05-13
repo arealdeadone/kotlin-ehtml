@@ -84,7 +84,6 @@ class EmailBuilder {
         )
     }
 
-
     fun build(): EmailBuildResult =
         EmailBuildResult(title = headResult.title, styles = headResult.styles, children = children)
 }

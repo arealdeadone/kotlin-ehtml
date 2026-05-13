@@ -101,9 +101,7 @@ class CssEmitterTest {
                 title = "Test"
                 style { tagSelector(HtmlTagSelector.P) { margin = "0" } }
             }
-            container {
-                single { p { +"x" } }
-            }
+            container { single { p { +"x" } } }
         }
         assert("margin: 0" in html)
     }
@@ -134,9 +132,7 @@ class CssEmitterTest {
                 title = "Test"
                 style { rule("body, table, td, p, a") { margin = "0" } }
             }
-            container {
-                single { p { +"x" } }
-            }
+            container { single { p { +"x" } } }
         }
         assert("margin: 0" in html)
     }
