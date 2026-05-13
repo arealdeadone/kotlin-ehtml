@@ -4,6 +4,7 @@ import com.arvindrachuri.ehtml.ast.ContainerNode
 import com.arvindrachuri.ehtml.ast.ElementNode
 import com.arvindrachuri.ehtml.ast.EmailNode
 import com.arvindrachuri.ehtml.ast.RawHtmlNode
+import com.arvindrachuri.ehtml.ast.RowNode
 import com.arvindrachuri.ehtml.ast.TextNode
 import com.arvindrachuri.ehtml.dsl.EmailDsl
 import com.arvindrachuri.ehtml.dsl.builders.css.StyleBuilder
@@ -67,9 +68,11 @@ class ContainerBuilder {
         )
     }
 
-    fun single(block: SingleBuilder.() -> Unit) {
-        val built = SingleBuilder().apply(block).build()
-        built.children.forEach { children.add(it) }
+    fun single(block: ColumnBuilder.() -> Unit) {
+        val columnBuilder = ColumnBuilder().apply(block)
+        val column = columnBuilder.build()
+        val row = RowNode(children = listOf(column))
+        children.add(row)
     }
 
     fun build(): ContainerNode =
