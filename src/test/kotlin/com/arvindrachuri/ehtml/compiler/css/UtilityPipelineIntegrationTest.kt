@@ -275,7 +275,6 @@ class UtilityPipelineIntegrationTest {
                     }
                 }
             }
-
         }
         assertTrue("<!--[if mso]>" in html)
         assertTrue("width: 600px" in html)
